@@ -3,117 +3,168 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ワークアウト記録 2026</title>
+<title>WORKOUT LOG 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <style>
 :root {
-  --fg: #1f1e1b; --muted: #6b6a66; --bg: #faf9f6; --panel: #ffffff; --line: #e6e3dc;
-  --c0: #d97757; --c1: #6a9bcc; --c2: #788c5d; --grid: #ecebe6; --axis: #c9c6bd; --ref: #8a8780; --bad: #b3362b;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --fg: #f0eee8; --muted: #a9a69e; --bg: #1c1b19; --panel: #262522; --line: #3a3834; --grid: #33312d; --axis: #55524b; --ref: #8f8c84; }
+  --bg: #0a0c0f; --panel: #12151a; --panel2: #171b21; --line: #232932; --fg: #f3f5f7; --muted: #8b94a1;
+  --volt: #d4ff3a; --run: #ff5a1f; --str: #3da9fc; --both: #d4ff3a; --grid: #1e232b; --off: #1a1e25;
+  --num: "Bebas Neue", "Inter", sans-serif; --en: "Inter", sans-serif; --jp: "Noto Sans JP", sans-serif;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 32px; }
-h1 { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 400; font-size: 30px; margin: 0; }
-h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
-.lead { color: var(--muted); margin: 8px 0 0; line-height: 1.8; }
-.lead b { color: var(--fg); font-variant-numeric: tabular-nums; }
-.sub { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
-.lab { font-size: 13px; color: var(--muted); }
-.val { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: 32px; line-height: 1.2; margin-top: 4px; font-variant-numeric: tabular-nums; }
-.unit { font-size: 14px; color: var(--muted); margin-left: 2px; font-family: inherit; }
-.note { font-size: 13px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+html { background: var(--bg); }
+body { margin: 0; color: var(--fg); font-family: var(--jp); -webkit-font-smoothing: antialiased;
+  background: radial-gradient(1200px 600px at 85% -10%, rgba(212,255,58,.08), transparent 60%), radial-gradient(900px 500px at -10% 10%, rgba(255,90,31,.06), transparent 60%), var(--bg); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 56px; display: flex; flex-direction: column; gap: 44px; }
+
+/* top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { font-family: var(--en); font-weight: 800; letter-spacing: .18em; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+.brand i { width: 10px; height: 10px; background: var(--volt); transform: skewX(-15deg); display: inline-block; box-shadow: 0 0 14px var(--volt); }
+.stamp { font-family: var(--en); font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+
+/* hero */
+.hero { position: relative; border: 1px solid var(--line); border-radius: 18px; padding: 32px 28px 26px; overflow: hidden;
+  background: linear-gradient(135deg, #14181e 0%, #0e1115 60%); }
+.hero::after { content: ""; position: absolute; right: -80px; top: -40px; width: 380px; height: 380px; transform: skewX(-18deg);
+  background: repeating-linear-gradient(90deg, rgba(212,255,58,.07) 0 2px, transparent 2px 22px); pointer-events: none; }
+.eyebrow { font-family: var(--en); font-weight: 700; font-size: 12px; letter-spacing: .22em; color: var(--volt); text-transform: uppercase; }
+.hero-main { display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; }
+.hero-num { font-family: var(--num); font-size: clamp(88px, 16vw, 168px); line-height: .85; letter-spacing: .01em; }
+.hero-unit { font-family: var(--num); font-size: clamp(28px, 4vw, 44px); color: var(--volt); padding-bottom: 8px; }
+.hero-lead { color: var(--muted); margin: 14px 0 0; line-height: 1.9; font-size: 14px; max-width: 640px; position: relative; z-index: 1; }
+.hero-lead b { color: var(--fg); font-family: var(--en); font-weight: 700; }
+.hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0; margin-top: 26px; border-top: 1px solid var(--line); position: relative; z-index: 1; }
+.hs { padding: 16px 16px 0 0; }
+.hs + .hs { padding-left: 16px; border-left: 1px solid var(--line); }
+.hs .k { font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; }
+.hs .v { font-family: var(--num); font-size: 40px; line-height: 1; margin-top: 6px; }
+.hs .v small { font-family: var(--jp); font-size: 12px; color: var(--muted); margin-left: 3px; font-weight: 500; }
+.route { margin-top: 24px; position: relative; z-index: 1; }
+.route-head { display: flex; justify-content: space-between; font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--muted); }
+.route-head b { color: var(--volt); }
+.track { position: relative; height: 8px; border-radius: 4px; background: var(--off); margin-top: 8px; overflow: hidden; }
+.track span { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, var(--run), var(--volt)); border-radius: 4px; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
+
+/* sections */
+.sec-h { display: flex; align-items: baseline; gap: 12px; margin: 0 0 16px; }
+.sec-h h2 { font-family: var(--num); font-size: 34px; letter-spacing: .03em; margin: 0; line-height: 1; }
+.sec-h span { font-size: 13px; color: var(--muted); }
+.sec-h::before { content: ""; width: 4px; height: 26px; background: var(--volt); transform: skewX(-15deg); align-self: center; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; position: relative; overflow: hidden; }
+.card .k { font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; }
+.card .j { font-size: 12px; color: var(--muted); margin-left: 6px; letter-spacing: 0; text-transform: none; font-family: var(--jp); font-weight: 400; }
+.card .v { font-family: var(--num); font-size: 52px; line-height: 1; margin-top: 10px; }
+.card .v small { font-family: var(--jp); font-size: 13px; color: var(--muted); margin-left: 4px; font-weight: 500; }
+.card .n { font-size: 12px; color: var(--muted); margin-top: 8px; font-family: var(--en); }
+.card.pb { background: linear-gradient(140deg, #d4ff3a 0%, #b7e61d 100%); border-color: transparent; color: #0a0c0f; }
+.card.pb .k, .card.pb .n, .card.pb .j { color: rgba(10,12,15,.7); }
+.card.pb::after { content: "PB"; position: absolute; right: -6px; bottom: -22px; font-family: var(--num); font-size: 120px; color: rgba(10,12,15,.08); }
+.card.accent-run { box-shadow: inset 3px 0 0 var(--run); }
+.card.accent-str { box-shadow: inset 3px 0 0 var(--str); }
+.chart-card h3 { font-family: var(--en); font-size: 12px; font-weight: 800; letter-spacing: .16em; margin: 0; text-transform: uppercase; }
+.chart-card p { font-size: 12px; color: var(--muted); margin: 4px 0 12px; }
 .chart { position: relative; min-height: 240px; }
 .heat { position: relative; min-height: 170px; }
-svg text { fill: var(--muted); font-size: 12px; }
-.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(0,0,0,.12); border-radius: 8px; padding: 6px 10px; font-size: 12px; white-space: nowrap; z-index: 2; }
-.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 8px; }
-.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+svg text { fill: var(--muted); font-size: 11px; font-family: var(--en); }
+svg text.big { fill: var(--fg); font-family: var(--num); font-size: 20px; }
+.tip { position: absolute; pointer-events: none; background: #000; color: var(--fg); border: 1px solid var(--volt); border-radius: 8px; padding: 6px 10px;
+  font-size: 12px; white-space: nowrap; z-index: 2; font-family: var(--jp); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 12px; }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+/* table */
 .tw { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
-th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th { font-weight: 600; color: var(--muted); font-size: 12px; }
-th:first-child, td:first-child { text-align: left; }
-.bar { height: 10px; border-radius: 5px; background: var(--grid); overflow: hidden; margin-top: 8px; }
-.bar span { display: block; height: 100%; background: var(--c0); }
-.foot { font-size: 12px; color: var(--muted); }
-.err { color: var(--bad); font-size: 13px; }
+table { border-collapse: collapse; width: 100%; font-family: var(--en); font-size: 14px; }
+th, td { padding: 12px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+th small { display: block; font-family: var(--jp); letter-spacing: 0; font-weight: 400; margin-top: 2px; text-transform: none; }
+td:first-child, th:first-child { text-align: left; }
+td:first-child { font-family: var(--num); font-size: 22px; }
+td.km { font-family: var(--num); font-size: 22px; color: var(--volt); }
+tbody tr:hover { background: var(--panel2); }
+
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-family: var(--en); font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; border-top: 1px solid var(--line); padding-top: 18px; }
+.err { color: var(--run); font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) { .track span { transition: none; } }
+@media (max-width: 520px) { .hs + .hs { padding-left: 10px; } .hs .v { font-size: 32px; } .card .v { font-size: 44px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>ワークアウト記録 2026</h1>
-    <p class="lead">6月7日から<span id="last-date">—</span>まで<b id="days">—</b>日のうち、<b id="active">—</b>日体を動かしました。走った距離は合計<b id="km">—</b>km、東京から京都まで（約513.6km）の<b id="kyoto">—</b>%です。</p>
-  </header>
-
-  <section>
-    <h2>ランニング</h2>
-    <p class="sub">7月3日に約3年半ぶりに走り始めてからの合計</p>
-    <div class="tiles">
-      <div class="card"><div class="lab">総走行距離</div><div class="val"><span id="t-km">—</span><span class="unit">km</span></div></div>
-      <div class="card"><div class="lab">走った日</div><div class="val"><span id="t-rundays">—</span><span class="unit">日</span></div></div>
-      <div class="card"><div class="lab">最長距離</div><div class="val"><span id="t-longest">—</span><span class="unit">km</span></div><div class="note" id="t-longest-date">—</div></div>
-      <div class="card"><div class="lab">10km 自己ベスト</div><div class="val" id="t-best">—</div><div class="note">年内目標 44:00 まであと <span id="t-gap">—</span>秒</div></div>
-    </div>
-  </section>
-
-  <div class="grid2">
-    <section class="card"><h2>月別の走行距離（直近6ヶ月）</h2><p class="sub">今月は途中まで</p><div class="chart" id="monthly"></div></section>
-    <section class="card"><h2>走行距離の累計</h2><p class="sub">日ごとの距離を足し上げたもの</p><div class="chart" id="cum"></div></section>
+  <div class="top">
+    <div class="brand"><i></i>WORKOUT LOG 2026</div>
+    <div class="stamp">Updated <span id="updated">—</span></div>
   </div>
 
-  <section class="card"><h2>10kmタイムの推移</h2><p class="sub">日報に記録したタイム。点線が年内目標</p><div class="chart" id="pb"></div></section>
-
-  <section>
-    <h2>筋トレの合計</h2>
-    <p class="sub">6〜7月は回数で、8月からはYouTube動画のセット数で記録</p>
-    <div class="tiles">
-      <div class="card"><div class="lab">腕立て</div><div class="val"><span id="s-push">—</span><span class="unit">回</span></div><div class="note">＋動画 <span id="s-push-sets">—</span>セット</div></div>
-      <div class="card"><div class="lab">腹筋</div><div class="val"><span id="s-sit">—</span><span class="unit">回</span></div><div class="note">＋動画 <span id="s-sit-sets">—</span>セット</div></div>
-      <div class="card"><div class="lab">スクワット</div><div class="val"><span id="s-squat">—</span><span class="unit">回</span></div><div class="note">＋動画 <span id="s-squat-sets">—</span>セット</div></div>
-      <div class="card"><div class="lab">ダンベル（左右計）</div><div class="val"><span id="s-db">—</span><span class="unit">回</span></div></div>
-      <div class="card"><div class="lab">腹筋ローラー</div><div class="val"><span id="s-roller">—</span><span class="unit">回</span></div></div>
-      <div class="card"><div class="lab">プランク</div><div class="val"><span id="s-plank">—</span><span class="unit">秒</span></div><div class="note">尻トレ動画 <span id="s-glute">—</span>セット・二重跳び <span id="s-jump">—</span>回</div></div>
+  <section class="hero">
+    <div class="eyebrow">Total Distance ／ 総走行距離</div>
+    <div class="hero-main"><span class="hero-num" id="km">—</span><span class="hero-unit">KM</span></div>
+    <p class="hero-lead">6月7日から<span id="last-date">—</span>まで、<b id="days">—</b>日のうち<b id="active">—</b>日体を動かしました。最長は<b id="longest-inline">—</b>km、10kmの自己ベストは<b id="best-inline">—</b>。</p>
+    <div class="hero-stats">
+      <div class="hs"><div class="k">Active Days</div><div class="v"><span id="h-active">—</span><small>日</small></div></div>
+      <div class="hs"><div class="k">Run Days</div><div class="v"><span id="h-run">—</span><small>日</small></div></div>
+      <div class="hs"><div class="k">Best Streak</div><div class="v"><span id="h-streak">—</span><small>日連続</small></div></div>
+      <div class="hs"><div class="k">Longest</div><div class="v"><span id="h-longest">—</span><small>km</small></div></div>
+    </div>
+    <div class="route">
+      <div class="route-head"><span>TOKYO → KYOTO 513.6KM</span><b><span id="kyoto">—</span>%</b></div>
+      <div class="track"><span id="k-bar"></span></div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>運動カレンダー</h2>
-    <p class="sub">1マスが1日。連続で体を動かした最長記録は <b id="streak">—</b>日</p>
-    <div class="heat" id="heat"></div>
-    <div class="legend"><span><i style="background:var(--c2)"></i>ラン＋筋トレ</span><span><i style="background:var(--c0)"></i>ラン</span><span><i style="background:var(--c1)"></i>筋トレ</span><span><i style="background:var(--grid)"></i>お休み</span></div>
-  </section>
-
-  <section class="card">
-    <h2>月ごとのまとめ（直近6ヶ月）</h2>
-    <div class="tw"><table>
-      <thead><tr><th>月</th><th>ラン(km)</th><th>走った日</th><th>運動した日</th><th>腕立て</th><th>腹筋</th><th>スクワット</th><th>23時就寝</th></tr></thead>
-      <tbody id="mtable"></tbody>
-    </table></div>
+  <section>
+    <div class="sec-h"><h2>RUNNING</h2><span>ランニング</span></div>
+    <div class="grid4" style="margin-bottom:12px">
+      <div class="card pb"><div class="k">10K Personal Best<span class="j">自己ベスト</span></div><div class="v" id="t-best">—</div><div class="n" id="t-best-date">—</div></div>
+      <div class="card accent-run"><div class="k">Goal<span class="j">年内目標</span></div><div class="v">44:00</div><div class="n">あと <span id="t-gap">—</span> 秒</div></div>
+      <div class="card accent-run"><div class="k">This Month<span class="j">今月</span></div><div class="v"><span id="t-month">—</span><small>km</small></div><div class="n" id="t-month-days">—</div></div>
+      <div class="card accent-run"><div class="k">Avg / Month<span class="j">8月以降の月平均</span></div><div class="v"><span id="t-avg">—</span><small>km</small></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card chart-card"><h3>Monthly Distance</h3><p>月別の走行距離（直近6ヶ月・今月は途中まで）</p><div class="chart" id="monthly"></div></div>
+      <div class="card chart-card"><h3>Cumulative</h3><p>走行距離の累計</p><div class="chart" id="cum"></div></div>
+    </div>
+    <div class="card chart-card" style="margin-top:12px"><h3>10K Progress</h3><p>10kmタイムの推移（点線が年内目標）</p><div class="chart" id="pb"></div></div>
   </section>
 
   <section>
-    <h2>日報によく出てきた言葉</h2>
-    <p class="sub">日報の本文に出てきた回数</p>
-    <div class="tiles">
-      <div class="card"><div class="lab">「偉い」</div><div class="val"><span id="w-erai">—</span><span class="unit">回</span></div></div>
-      <div class="card"><div class="lab">「偉くない」</div><div class="val"><span id="w-erakunai">—</span><span class="unit">回</span></div></div>
+    <div class="sec-h"><h2>STRENGTH</h2><span>筋トレ（6〜7月は回数、8月からは動画セット数で記録）</span></div>
+    <div class="grid4">
+      <div class="card accent-str"><div class="k">Push-ups<span class="j">腕立て</span></div><div class="v"><span id="s-push">—</span><small>回</small></div><div class="n">+ <span id="s-push-sets">—</span> SETS</div></div>
+      <div class="card accent-str"><div class="k">Sit-ups<span class="j">腹筋</span></div><div class="v"><span id="s-sit">—</span><small>回</small></div><div class="n">+ <span id="s-sit-sets">—</span> SETS</div></div>
+      <div class="card accent-str"><div class="k">Squats<span class="j">スクワット</span></div><div class="v"><span id="s-squat">—</span><small>回</small></div><div class="n">+ <span id="s-squat-sets">—</span> SETS</div></div>
+      <div class="card accent-str"><div class="k">Dumbbell<span class="j">ダンベル左右計</span></div><div class="v"><span id="s-db">—</span><small>回</small></div></div>
+      <div class="card accent-str"><div class="k">Ab Roller<span class="j">腹筋ローラー</span></div><div class="v"><span id="s-roller">—</span><small>回</small></div></div>
+      <div class="card accent-str"><div class="k">Plank<span class="j">プランク</span></div><div class="v"><span id="s-plank">—</span><small>秒</small></div><div class="n">GLUTES <span id="s-glute">—</span> SETS ・ JUMP ROPE <span id="s-jump">—</span></div></div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>東京から京都まで走ると</h2>
-    <p class="sub">東海道新幹線の距離（約513.6km）に対して、ここまでの合計 <b id="k-km">—</b>km。残り <b id="k-left">—</b>km</p>
-    <div class="bar"><span id="k-bar" style="width:0"></span></div>
+  <section>
+    <div class="sec-h"><h2>CALENDAR</h2><span>運動カレンダー（1マス＝1日）</span></div>
+    <div class="card">
+      <div class="heat" id="heat"></div>
+      <div class="legend"><span><i style="background:var(--both)"></i>ラン＋筋トレ</span><span><i style="background:var(--run)"></i>ラン</span><span><i style="background:var(--str)"></i>筋トレ</span><span><i style="background:var(--off)"></i>お休み</span></div>
+    </div>
   </section>
 
-  <p class="foot">データ更新日：<span id="updated">—</span></p>
+  <section>
+    <div class="sec-h"><h2>MONTHLY</h2><span>月ごとのまとめ（直近6ヶ月）</span></div>
+    <div class="card tw" style="padding:6px 8px">
+      <table>
+        <thead><tr><th>Month<small>月</small></th><th>Distance<small>ラン(km)</small></th><th>Run<small>走った日</small></th><th>Active<small>運動した日</small></th><th>Push-ups<small>腕立て</small></th><th>Sit-ups<small>腹筋</small></th><th>Squats<small>スクワット</small></th><th>Sleep<small>23時就寝</small></th></tr></thead>
+        <tbody id="mtable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="foot"><span>Since 2026.06.07</span><span>Keep moving.</span></div>
 </div>
 
 <script>
@@ -123,7 +174,7 @@ const fmt = (v, d = 0) => d3.format(',.' + d + 'f')(v);
 const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
 const md = (iso) => { const [, m, d] = iso.split('-'); return (+m) + '/' + (+d); };
 const utc = (iso) => new Date(iso + 'T00:00:00Z');
-const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function tip(box) {
   let t = box.querySelector('.tip');
@@ -132,45 +183,61 @@ function tip(box) {
     show(ev, text) {
       t.textContent = text; t.hidden = false;
       const r = box.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
-      t.style.left = Math.max(0, Math.min(x + 12, box.clientWidth - t.offsetWidth)) + 'px'; t.style.top = Math.max(0, y - 36) + 'px';
+      t.style.left = Math.max(0, Math.min(x + 12, box.clientWidth - t.offsetWidth)) + 'px'; t.style.top = Math.max(0, y - 38) + 'px';
     },
     hide() { t.hidden = true; }
   };
 }
 
+function countUp(el, to, d = 0) {
+  if (!el) return;
+  if (!motion) { el.textContent = fmt(to, d); return; }
+  const t0 = performance.now(), dur = 1200;
+  const step = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(to * e, d); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
 function summarize(daily, records) {
-  const sum = (k) => daily.reduce((a, r) => a + (+r[k] || 0), 0);
+  const sum = (k, rows = daily) => rows.reduce((a, r) => a + (+r[k] || 0), 0);
   let best = 0, cur = 0;
   for (const r of daily) { cur = +r.active_day ? cur + 1 : 0; best = Math.max(best, cur); }
   const longest = daily.reduce((a, r) => (+r.run_km > +a.run_km ? r : a), daily[0]);
   const km = Math.round(sum('run_km') * 10) / 10;
   const ten = records.filter((r) => +r.distance_km === 10);
   const b = ten.length ? ten.reduce((a, r) => (+r.seconds < +a.seconds ? r : a)) : null;
-  const lab = (reps, sets) => [reps ? reps + '回' : '', sets ? sets + 'セット' : ''].filter(Boolean).join('＋') || '—';
-  const monthly = d3.groups(daily, (r) => r.month).map(([month, rs]) => {
-    const s = (k) => rs.reduce((a, r) => a + (+r[k] || 0), 0);
-    return { month, run_km: Math.round(s('run_km') * 10) / 10, run_days: s('run_day'), active_days: s('active_day'),
-      push: lab(s('pushup_reps'), s('pushup_sets')), sit: lab(s('situp_reps'), s('situp_sets')), squat: lab(s('squat_reps'), s('squat_sets')), sleep23: s('sleep23') };
-  });
+  const lab = (reps, sets) => [reps ? reps + '回' : '', sets ? sets + 'セット' : ''].filter(Boolean).join(' + ') || '—';
+  const monthly = d3.groups(daily, (r) => r.month).map(([month, rs]) => ({
+    month, run_km: Math.round(sum('run_km', rs) * 10) / 10, run_days: sum('run_day', rs), active_days: sum('active_day', rs),
+    push: lab(sum('pushup_reps', rs), sum('pushup_sets', rs)), sit: lab(sum('situp_reps', rs), sum('situp_sets', rs)),
+    squat: lab(sum('squat_reps', rs), sum('squat_sets', rs)), sleep23: sum('sleep23', rs) }));
   let c = 0; const cum = daily.map((r) => { c += +r.run_km || 0; return { date: r.date, d: utc(r.date), cum: Math.round(c * 10) / 10, run: +r.run_km }; });
   return { sum, km, best, longest, b, monthly, cum };
 }
 
-function fillNumbers(daily, S) {
+function fillNumbers(daily, S, updated) {
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  set('updated', (updated || '').replaceAll('-', '.'));
   set('last-date', md(daily[daily.length - 1].date).replace('/', '月') + '日');
-  set('days', daily.length); set('active', S.sum('active_day')); set('km', fmt(S.km, 1)); set('kyoto', Math.round(S.km / KYOTO * 100));
-  set('t-km', fmt(S.km, 1)); set('t-rundays', S.sum('run_day')); set('t-longest', fmt(+S.longest.run_km, 1)); set('t-longest-date', md(S.longest.date) + 'に走った距離');
-  set('t-best', S.b ? S.b.time : '—'); set('t-gap', S.b ? Math.max(0, +S.b.seconds - GOAL_10K) : '—');
+  countUp($('km'), S.km, 1);
+  set('days', daily.length); set('active', S.sum('active_day'));
+  set('longest-inline', fmt(+S.longest.run_km, 1)); set('best-inline', S.b ? S.b.time : '—');
+  countUp($('h-active'), S.sum('active_day')); countUp($('h-run'), S.sum('run_day')); countUp($('h-streak'), S.best); countUp($('h-longest'), +S.longest.run_km, 1);
+  set('kyoto', Math.round(S.km / KYOTO * 100));
+  requestAnimationFrame(() => { $('k-bar').style.width = Math.min(100, S.km / KYOTO * 100) + '%'; });
+  set('t-best', S.b ? S.b.time : '—'); set('t-best-date', S.b ? `${md(S.b.date)} ・ ${S.b.pace} /KM` : '—');
+  set('t-gap', S.b ? Math.max(0, +S.b.seconds - GOAL_10K) : '—');
+  const last = S.monthly[S.monthly.length - 1];
+  set('t-month', fmt(last.run_km, 1)); set('t-month-days', `${+last.month.slice(5)}月 ・ ${last.run_days}日走った`);
+  const since = S.monthly.filter((m) => m.month >= '2026-08' && m !== last);
+  set('t-avg', since.length ? fmt(d3.mean(since, (m) => m.run_km), 1) : '—');
   [['s-push','pushup_reps'],['s-push-sets','pushup_sets'],['s-sit','situp_reps'],['s-sit-sets','situp_sets'],['s-squat','squat_reps'],['s-squat-sets','squat_sets'],
-   ['s-db','dumbbell_reps'],['s-roller','roller_reps'],['s-plank','plank_sec'],['s-glute','glute_sets'],['s-jump','jumprope_reps'],['w-erai','erai'],['w-erakunai','eraku_nai']]
-    .forEach(([id, k]) => set(id, fmt(S.sum(k))));
-  set('streak', S.best); set('k-km', fmt(S.km, 1)); set('k-left', fmt(Math.max(0, KYOTO - S.km), 1));
-  $('k-bar').style.width = Math.min(100, S.km / KYOTO * 100) + '%';
+   ['s-db','dumbbell_reps'],['s-roller','roller_reps'],['s-plank','plank_sec'],['s-glute','glute_sets'],['s-jump','jumprope_reps']]
+    .forEach(([id, k]) => countUp($(id), S.sum(k)));
   const tb = $('mtable'); tb.replaceChildren();
-  for (const r of S.monthly.slice(-6)) {
+  for (const r of S.monthly.slice(-6).reverse()) {
     const tr = tb.insertRow();
-    [+r.month.slice(5) + '月', r.run_km.toFixed(1), r.run_days, r.active_days, r.push, r.sit, r.squat, r.sleep23].forEach((v) => { tr.insertCell().textContent = v; });
+    [[+r.month.slice(5) + '月'], [r.run_km.toFixed(1), 'km'], [r.run_days], [r.active_days], [r.push], [r.sit], [r.squat], [r.sleep23]]
+      .forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });
   }
 }
 
@@ -180,32 +247,47 @@ function svgIn(el, H, label) {
   return [d3.select(el).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', label), W];
 }
 
+function defs(svg) {
+  const d = svg.append('defs');
+  const g = d.append('linearGradient').attr('id', 'gBar').attr('x1', 0).attr('y1', 1).attr('x2', 0).attr('y2', 0);
+  g.append('stop').attr('offset', '0%').attr('stop-color', '#ff5a1f');
+  g.append('stop').attr('offset', '100%').attr('stop-color', '#d4ff3a');
+  const a = d.append('linearGradient').attr('id', 'gArea').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 1);
+  a.append('stop').attr('offset', '0%').attr('stop-color', '#d4ff3a').attr('stop-opacity', .35);
+  a.append('stop').attr('offset', '100%').attr('stop-color', '#d4ff3a').attr('stop-opacity', 0);
+}
+
+let firstDraw = true;
 function drawMonthly(S) {
-  const el = $('monthly'), H = 240, mg = {t: 22, r: 8, b: 26, l: 8};
+  const el = $('monthly'), H = 240, mg = {t: 28, r: 6, b: 26, l: 6};
   const rows = S.monthly.slice(-6).filter((r) => r.run_km > 0);
-  const [svg, W] = svgIn(el, H, '月別の走行距離の棒グラフ');
-  const x = d3.scaleBand().domain(rows.map((r) => r.month)).range([mg.l, W - mg.r]).padding(0.3);
+  const [svg, W] = svgIn(el, H, '月別の走行距離の棒グラフ'); defs(svg);
+  const x = d3.scaleBand().domain(rows.map((r) => r.month)).range([mg.l, W - mg.r]).padding(0.32);
   const y = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.run_km) || 1]).nice().range([H - mg.b, mg.t]);
   const tp = tip(el);
-  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.month)).attr('width', x.bandwidth())
-    .attr('y', (r) => y(r.run_km)).attr('height', (r) => y(0) - y(r.run_km)).attr('rx', 3).style('fill', 'var(--c0)')
+  const bars = svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.month)).attr('width', x.bandwidth()).attr('rx', 4).style('fill', 'url(#gBar)')
     .on('pointermove', (ev, r) => tp.show(ev, `${+r.month.slice(5)}月：${r.run_km.toFixed(1)}km（${r.run_days}日）`)).on('pointerleave', () => tp.hide());
-  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.month) + x.bandwidth() / 2).attr('y', (r) => y(r.run_km) - 6).attr('text-anchor', 'middle').text((r) => r.run_km);
-  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.month) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle').text((r) => +r.month.slice(5) + '月');
-  svg.append('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--axis)');
+  if (firstDraw && motion) bars.attr('y', y(0)).attr('height', 0).transition().duration(900).delay((r, i) => i * 80).ease(d3.easeCubicOut).attr('y', (r) => y(r.run_km)).attr('height', (r) => y(0) - y(r.run_km));
+  else bars.attr('y', (r) => y(r.run_km)).attr('height', (r) => y(0) - y(r.run_km));
+  svg.append('g').selectAll('text').data(rows).join('text').attr('class', 'big').attr('x', (r) => x(r.month) + x.bandwidth() / 2).attr('y', (r) => y(r.run_km) - 8).attr('text-anchor', 'middle').text((r) => r.run_km.toFixed(1));
+  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.month) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle').text((r) => d3.utcFormat('%b')(utc(r.month + '-01')).toUpperCase());
 }
 
 function drawCum(S) {
-  const el = $('cum'), H = 240, mg = {t: 14, r: 14, b: 26, l: 40}, rows = S.cum;
-  const [svg, W] = svgIn(el, H, '走行距離の累計の折れ線グラフ');
+  const el = $('cum'), H = 240, mg = {t: 16, r: 14, b: 26, l: 40}, rows = S.cum;
+  const [svg, W] = svgIn(el, H, '走行距離の累計の折れ線グラフ'); defs(svg);
   const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).range([mg.l, W - mg.r]);
   const y = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.cum) || 1]).nice().range([H - mg.b, mg.t]);
   svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y).attr('y2', y).style('stroke', 'var(--grid)');
-  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', mg.l - 6).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text((v) => v);
+  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', mg.l - 8).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text((v) => v);
   const months = d3.utcMonth.range(d3.utcMonth.ceil(rows[0].d), rows[rows.length - 1].d);
-  svg.append('g').selectAll('text').data(months).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((d) => (d.getUTCMonth() + 1) + '月');
-  svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.cum))).style('fill', 'none').style('stroke', 'var(--c0)').style('stroke-width', 2.5);
-  const tp = tip(el), dot = svg.append('circle').attr('r', 4).style('fill', 'var(--c0)').attr('opacity', 0);
+  svg.append('g').selectAll('text').data(months).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((d) => d3.utcFormat('%b')(d).toUpperCase());
+  svg.append('path').datum(rows).attr('d', d3.area().x((r) => x(r.d)).y0(y(0)).y1((r) => y(r.cum))).style('fill', 'url(#gArea)');
+  const line = svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.cum))).style('fill', 'none').style('stroke', 'var(--volt)').style('stroke-width', 2.5);
+  if (firstDraw && motion) { const L = line.node().getTotalLength(); line.attr('stroke-dasharray', `${L} ${L}`).attr('stroke-dashoffset', L).transition().duration(1400).ease(d3.easeCubicOut).attr('stroke-dashoffset', 0); }
+  const last = rows[rows.length - 1];
+  svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.cum)).attr('r', 5).style('fill', 'var(--volt)').style('filter', 'drop-shadow(0 0 6px #d4ff3a)');
+  const tp = tip(el), dot = svg.append('circle').attr('r', 4).style('fill', '#fff').attr('opacity', 0);
   svg.append('rect').attr('x', mg.l).attr('y', mg.t).attr('width', W - mg.l - mg.r).attr('height', H - mg.t - mg.b).style('fill', 'transparent')
     .on('pointermove', (ev) => {
       const [px] = d3.pointer(ev); const r = rows[Math.min(rows.length - 1, d3.bisector((r) => r.d).center(rows, x.invert(px)))];
@@ -215,60 +297,60 @@ function drawCum(S) {
 }
 
 function drawPb(records) {
-  const el = $('pb'), H = 240, mg = {t: 24, r: 20, b: 26, l: 46};
+  const el = $('pb'), H = 240, mg = {t: 30, r: 24, b: 26, l: 48};
   const rows = records.filter((r) => +r.distance_km === 10).map((r) => ({...r, s: +r.seconds, d: utc(r.date)}));
   if (!rows.length) return;
   const [svg, W] = svgIn(el, H, '10kmタイムの推移。下に行くほど速い');
   const x = d3.scaleUtc().domain([d3.min(rows, (r) => r.d), d3.utcDay.offset(d3.max(rows, (r) => r.d), 4)]).range([mg.l, W - mg.r]);
   const y = d3.scaleLinear().domain([Math.min(GOAL_10K, d3.min(rows, (r) => r.s)) - 30, d3.max(rows, (r) => r.s) + 30]).range([H - mg.b, mg.t]);
   svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y).attr('y2', y).style('stroke', 'var(--grid)');
-  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', mg.l - 6).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text(mmss);
-  svg.append('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y(GOAL_10K)).attr('y2', y(GOAL_10K)).style('stroke', 'var(--ref)').style('stroke-dasharray', '4 4');
-  svg.append('text').attr('x', W - mg.r).attr('y', y(GOAL_10K) + 14).attr('text-anchor', 'end').text('目標 ' + mmss(GOAL_10K));
+  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', mg.l - 8).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text(mmss);
+  svg.append('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y(GOAL_10K)).attr('y2', y(GOAL_10K)).style('stroke', 'var(--volt)').style('stroke-dasharray', '6 5').style('opacity', .8);
+  svg.append('text').attr('x', W - mg.r).attr('y', y(GOAL_10K) + 16).attr('text-anchor', 'end').style('fill', 'var(--volt)').text('GOAL ' + mmss(GOAL_10K));
   const months = d3.utcMonth.range(d3.utcMonth.ceil(x.domain()[0]), x.domain()[1]);
-  svg.append('g').selectAll('text').data(months).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((d) => (d.getUTCMonth() + 1) + '月');
-  svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.s))).style('fill', 'none').style('stroke', 'var(--c0)').style('stroke-width', 2);
+  svg.append('g').selectAll('text').data(months).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((d) => d3.utcFormat('%b')(d).toUpperCase());
+  svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.s))).style('fill', 'none').style('stroke', 'var(--run)').style('stroke-width', 2.5);
   const tp = tip(el);
-  svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.d)).attr('cy', (r) => y(r.s)).attr('r', 5).style('fill', 'var(--c0)')
+  svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.d)).attr('cy', (r) => y(r.s)).attr('r', 5)
+    .style('fill', (r, i) => i === rows.length - 1 ? 'var(--volt)' : 'var(--bg)').style('stroke', (r, i) => i === rows.length - 1 ? 'var(--volt)' : 'var(--run)').style('stroke-width', 2)
     .on('pointermove', (ev, r) => tp.show(ev, `${md(r.date)}：${r.time}（1km ${r.pace}）`)).on('pointerleave', () => tp.hide());
   const narrow = W < 460;
-  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.d)).attr('y', (r) => y(r.s) - 10).attr('text-anchor', 'middle')
+  svg.append('g').selectAll('text').data(rows).join('text').attr('class', 'big').attr('x', (r) => x(r.d)).attr('y', (r) => y(r.s) - 12).attr('text-anchor', 'middle')
     .text((r, i) => (!narrow || i === 0 || i === rows.length - 1) ? r.time : '');
 }
 
 function drawHeat(daily) {
   const el = $('heat'), rows = daily.map((r) => ({...r, d: utc(r.date)}));
   const start = d3.utcSunday.floor(rows[0].d), weeks = d3.utcSunday.count(start, rows[rows.length - 1].d) + 1;
-  const W0 = el.clientWidth || 320, lab = 22, top = 16, gap = 2;
-  const cell = Math.max(8, Math.min(22, Math.floor((W0 - lab) / weeks) - 2)), step = cell + gap, H = top + 7 * step;
+  const W0 = el.clientWidth || 320, lab = 22, top = 18, gap = 3;
+  const cell = Math.max(8, Math.min(24, Math.floor((W0 - lab) / weeks) - gap)), step = cell + gap, H = top + 7 * step;
   const [svg] = svgIn(el, H, '日ごとの運動の有無を色で示したカレンダー');
-  const col = (r) => +r.run_day && +r.strength_day ? 'var(--c2)' : +r.run_day ? 'var(--c0)' : +r.strength_day ? 'var(--c1)' : 'var(--grid)';
+  const col = (r) => +r.run_day && +r.strength_day ? 'var(--both)' : +r.run_day ? 'var(--run)' : +r.strength_day ? 'var(--str)' : 'var(--off)';
   const tp = tip(el);
   svg.append('g').selectAll('rect').data(rows).join('rect')
     .attr('x', (r) => lab + d3.utcSunday.count(start, r.d) * step).attr('y', (r) => top + r.d.getUTCDay() * step)
-    .attr('width', cell).attr('height', cell).attr('rx', 2).style('fill', col)
+    .attr('width', cell).attr('height', cell).attr('rx', 3).style('fill', col)
     .on('pointermove', (ev, r) => {
       const p = []; if (+r.run_km) p.push(`ラン ${r.run_km}km`); if (+r.strength_day) p.push(+r.gym ? 'ジム' : '筋トレ');
       tp.show(ev, `${md(r.date)}：${p.length ? p.join('・') : 'お休み'}`);
     }).on('pointerleave', () => tp.hide());
-  ['日','月','火','水','木','金','土'].forEach((t, i) => svg.append('text').attr('x', 0).attr('y', top + i * step + cell - 2).text(t));
+  ['日','月','火','水','木','金','土'].forEach((t, i) => svg.append('text').attr('x', 0).attr('y', top + i * step + cell - 3).style('font-family', 'var(--jp)').text(t));
   const months = d3.utcMonth.range(d3.utcMonth.ceil(rows[0].d), rows[rows.length - 1].d);
   const labelCol = (d) => { const w = d3.utcSunday.count(start, d); return d.getUTCDay() === 0 ? w : w + 1; };
   svg.append('g').selectAll('text').data([{d: rows[0].d, col: 0}, ...months.map((d) => ({d, col: labelCol(d)}))]).join('text')
-    .attr('x', (m) => lab + m.col * step).attr('y', 11).text((m) => (m.d.getUTCMonth() + 1) + '月');
+    .attr('x', (m) => lab + m.col * step).attr('y', 11).style('font-weight', 700).style('letter-spacing', '.1em').text((m) => d3.utcFormat('%b')(m.d).toUpperCase());
   const xL = (w) => lab + w * step - gap / 2, yT = (row) => top + row * step - gap / 2;
   svg.append('g').selectAll('path').data(months).join('path')
     .attr('d', (d) => { const w = d3.utcSunday.count(start, d), dow = d.getUTCDay();
       return dow === 0 ? `M${xL(w)},${yT(0)}V${yT(7)}` : `M${xL(w)},${yT(7)}V${yT(dow)}H${xL(w + 1)}V${yT(0)}`; })
-    .style('fill', 'none').style('stroke', 'var(--fg)').style('stroke-width', 1.75).style('stroke-opacity', 0.9).style('pointer-events', 'none');
+    .style('fill', 'none').style('stroke', '#ffffff').style('stroke-width', 1.75).style('stroke-opacity', 0.85).style('pointer-events', 'none');
 }
 
 Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json())])
   .then(([d, rec]) => {
     const daily = d.rows, records = rec.rows, S = summarize(daily, records);
-    $('updated').textContent = d.updated || '—';
-    fillNumbers(daily, S);
-    const drawAll = () => { drawMonthly(S); drawCum(S); drawPb(records); drawHeat(daily); };
+    fillNumbers(daily, S, d.updated);
+    const drawAll = () => { drawMonthly(S); drawCum(S); drawPb(records); drawHeat(daily); firstDraw = false; };
     drawAll();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(drawAll, 150); });
   })

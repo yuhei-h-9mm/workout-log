@@ -221,7 +221,7 @@ tbody tr:hover { background: var(--panel2); }
     <div class="sec-h"><h2>MONTHLY</h2><span>月ごとのまとめ（直近6ヶ月）</span></div>
     <div class="card tw" style="padding:6px 8px">
       <table>
-        <thead><tr><th>Month<small>月</small></th><th>Distance<small>ラン(km)</small></th><th>Run<small>走った日</small></th><th>Active<small>運動した日</small></th><th>Push-ups<small>腕立て</small></th><th>Sit-ups<small>腹筋</small></th><th>Squats<small>スクワット</small></th><th>Sleep<small>23時就寝</small></th></tr></thead>
+        <thead><tr><th>Month<small>月</small></th><th>Distance<small>ラン(km)</small></th><th>Pace<small>平均ペース</small></th><th>Run<small>走った日</small></th><th>Active<small>運動した日</small></th><th>Push-ups<small>腕立て</small></th><th>Sit-ups<small>腹筋</small></th><th>Squats<small>スクワット</small></th><th>Sleep<small>23時就寝</small></th></tr></thead>
         <tbody id="mtable"></tbody>
       </table>
     </div>
@@ -361,7 +361,7 @@ function fillNumbers(daily, S, updated, records) {
   const tb = $('mtable'); tb.replaceChildren();
   for (const r of S.monthly.slice(-6).reverse()) {
     const tr = tb.insertRow();
-    [[+r.month.slice(5) + '月'], [r.run_km.toFixed(1), 'km'], [r.run_days], [r.active_days], [r.push], [r.sit], [r.squat], [r.sleep23]]
+    [[+r.month.slice(5) + '月'], [r.run_km.toFixed(1), 'km'], [(window.NIKE && window.NIKE.get(r.month)) ? window.NIKE.get(r.month).avg_pace : '—'], [r.run_days], [r.active_days], [r.push], [r.sit], [r.squat], [r.sleep23]]
       .forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });
   }
 }
@@ -552,8 +552,9 @@ function drawHeat(daily) {
     .style('fill', 'none').style('stroke', 'var(--navy)').style('stroke-width', 1.75).style('stroke-opacity', 0.9).style('pointer-events', 'none');
 }
 
-Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json())])
-  .then(([d, rec]) => {
+Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json()), fetch('data/nike.json').then((r) => r.json()).catch(() => ({rows: []}))])
+  .then(([d, rec, nike]) => {
+    window.NIKE = new Map(nike.rows.map((r) => [r.month, r]));
     const daily = d.rows, records = rec.rows, S = summarize(daily, records);
     fillNumbers(daily, S, d.updated, records);
     const drawAll = () => { drawMonthly(S); drawCum(S); drawWeekly(daily); drawPb(records); drawPace(records); drawHeat(daily); firstDraw = false; };

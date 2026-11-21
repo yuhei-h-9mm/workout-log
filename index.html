@@ -56,6 +56,24 @@ body { margin: 0; color: var(--fg); font-family: var(--jp); -webkit-font-smoothi
 .track { position: relative; height: 8px; border-radius: 4px; background: rgba(255,255,255,.25); margin-top: 8px; overflow: hidden; }
 .track span { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, #ffffff, #d8f3ff); border-radius: 4px; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
 
+/* race */
+.race { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; }
+.race-main { background: var(--navy); color: #fff; border-radius: 16px; padding: 22px 24px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+.race-main::after { content: "RACE"; position: absolute; right: -10px; bottom: -34px; font-family: var(--num); font-size: 150px; color: rgba(255,255,255,.05); }
+.race-main .eyebrow { color: #7fd8ff; }
+.race-name { font-family: var(--en); font-weight: 800; font-size: 18px; margin-top: 6px; }
+.race-count { display: flex; align-items: flex-end; gap: 8px; margin-top: 10px; }
+.race-count .big { font-family: var(--num); font-size: 96px; line-height: .85; color: #fff; }
+.race-count .lab { font-size: 13px; color: rgba(255,255,255,.75); padding-bottom: 8px; }
+.race-meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-family: var(--en); font-size: 12px; color: rgba(255,255,255,.75); letter-spacing: .06em; }
+.race-meta b { color: #fff; font-family: var(--num); font-size: 22px; letter-spacing: .02em; margin-left: 4px; }
+.race-side { display: grid; grid-template-rows: 1fr 1fr; gap: 12px; }
+.goalbar { height: 8px; border-radius: 4px; background: var(--off); margin-top: 10px; overflow: hidden; }
+.goalbar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--sky)); border-radius: 4px; transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+.warn-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.warn-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+@media (max-width: 760px) { .race { grid-template-columns: 1fr; } }
+
 /* sections */
 .sec-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 16px; }
 .sec-h h2 { font-family: var(--num); font-size: 34px; letter-spacing: .03em; margin: 0; line-height: 1; color: var(--navy); }
@@ -144,18 +162,39 @@ tbody tr:hover { background: var(--panel2); }
   </section>
 
   <section>
+    <div class="sec-h"><h2>NEXT RACE</h2><span>次の大会</span></div>
+    <div class="race">
+      <div class="race-main">
+        <div class="eyebrow">Half Marathon ／ ハーフマラソン</div>
+        <div class="race-name" id="race-date">—</div>
+        <div class="race-count"><span class="big" id="race-days">—</span><span class="lab">DAYS TO GO<br>大会まであと</span></div>
+        <div class="race-meta"><span>TARGET<b id="race-target">—</b></span><span>PACE<b id="race-pace">—</b><small> /KM</small></span><span>WEEKS<b id="race-weeks">—</b></span></div>
+      </div>
+      <div class="race-side">
+        <div class="card accent-run"><div class="k">Monthly Goal<span class="j" id="mg-label">今月の目標</span></div><div class="v"><span id="mg-done">—</span><small id="mg-goal">—</small></div><div class="goalbar"><span id="mg-bar"></span></div><div class="n" id="mg-note">—</div></div>
+        <div class="card accent-run"><div class="k">This Week<span class="j">今週（月曜はじまり）</span></div><div class="v"><span id="wk-km">—</span><small>km</small></div><div class="n" id="wk-note">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
     <div class="sec-h"><h2>RUNNING</h2><span>ランニング</span></div>
     <div class="grid4" style="margin-bottom:12px">
-      <div class="card pb"><div class="k">10K Personal Best<span class="j">自己ベスト</span></div><div class="v" id="t-best">—</div><div class="n" id="t-best-date">—</div></div>
-      <div class="card accent-run"><div class="k">Goal<span class="j">年内目標</span></div><div class="v">44:00</div><div class="n">あと <span id="t-gap">—</span> 秒</div></div>
-      <div class="card accent-run"><div class="k">This Month<span class="j">今月</span></div><div class="v"><span id="t-month">—</span><small>km</small></div><div class="n" id="t-month-days">—</div></div>
-      <div class="card accent-run"><div class="k">Avg / Month<span class="j">8月以降の月平均</span></div><div class="v"><span id="t-avg">—</span><small>km</small></div></div>
+      <div class="card pb"><div class="k">10K Personal Best<span class="j">10km 自己ベスト</span></div><div class="v" id="t-best">—</div><div class="n" id="t-best-date">—</div></div>
+      <div class="card accent-run"><div class="k">5K Best<span class="j">5km 自己ベスト</span></div><div class="v" id="pb5">—</div><div class="n" id="pb5-n">—</div></div>
+      <div class="card accent-run"><div class="k">Half Best<span class="j">ハーフ 自己ベスト</span></div><div class="v" id="pbh">—</div><div class="n" id="pbh-n">—</div></div>
+      <div class="card accent-run"><div class="k">10K Goal<span class="j">10km 年内目標 44:00</span></div><div class="v"><span id="t-gap">—</span><small>秒</small></div><div class="n">目標まであと</div></div>
     </div>
     <div class="grid2">
       <div class="card chart-card"><h3>Monthly Distance</h3><p>月別の走行距離（直近6ヶ月・今月は途中まで）</p><div class="chart" id="monthly"></div></div>
       <div class="card chart-card"><h3>Cumulative</h3><p>走行距離の累計</p><div class="chart" id="cum"></div></div>
     </div>
-    <div class="card chart-card" style="margin-top:12px"><h3>10K Progress</h3><p>10kmタイムの推移（点線が年内目標）</p><div class="chart" id="pb"></div></div>
+    <div class="card chart-card" style="margin-top:12px"><h3>Weekly Distance</h3><p>週ごとの走行距離（直近16週・月曜はじまり）</p><div class="chart" id="weekly"></div>
+      <div class="warn-legend"><span><i style="background:linear-gradient(#1f5bff,#22b8ff)"></i>通常</span><span><i style="background:var(--run)"></i>前週より30%以上増えた週（オーバーワーク注意）</span></div></div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card chart-card"><h3>10K Progress</h3><p>10kmタイムの推移（点線が年内目標）</p><div class="chart" id="pb"></div></div>
+      <div class="card chart-card"><h3>Pace</h3><p>1kmあたりのペース（タイムを記録したラン・下ほど速い）</p><div class="chart" id="pace"></div></div>
+    </div>
   </section>
 
   <section>
@@ -193,6 +232,8 @@ tbody tr:hover { background: var(--panel2); }
 
 <script>
 const GOAL_10K = 44 * 60, KYOTO = 513.6;
+const RACE = { date: '2026-12-20', name: 'ハーフマラソン', distance: 21.0975, targetSec: 100 * 60, targetLabel: 'SUB 1:40' };
+const MONTH_GOALS = { '2026-11': 80 }; // 月報で決めた月間ランニング目標(km)
 const $ = (id) => document.getElementById(id);
 const fmt = (v, d = 0) => d3.format(',.' + d + 'f')(v);
 const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
@@ -299,7 +340,7 @@ function summarize(daily, records) {
   return { sum, km, best, longest, b, monthly, cum };
 }
 
-function fillNumbers(daily, S, updated) {
+function fillNumbers(daily, S, updated, records) {
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
   set('updated', (updated || '').replaceAll('-', '.'));
   set('last-date', md(daily[daily.length - 1].date).replace('/', '月') + '日');
@@ -313,8 +354,7 @@ function fillNumbers(daily, S, updated) {
   set('t-gap', S.b ? Math.max(0, +S.b.seconds - GOAL_10K) : '—');
   const last = S.monthly[S.monthly.length - 1];
   set('t-month', fmt(last.run_km, 1)); set('t-month-days', `${+last.month.slice(5)}月 ・ ${last.run_days}日走った`);
-  const since = S.monthly.filter((m) => m.month >= '2026-08' && m !== last);
-  set('t-avg', since.length ? fmt(d3.mean(since, (m) => m.run_km), 1) : '—');
+  fillRace(daily, S, records);
   [['s-push','pushup_reps'],['s-push-sets','pushup_sets'],['s-sit','situp_reps'],['s-sit-sets','situp_sets'],['s-squat','squat_reps'],['s-squat-sets','squat_sets'],
    ['s-db','dumbbell_reps'],['s-roller','roller_reps'],['s-plank','plank_sec'],['s-glute','glute_sets'],['s-jump','jumprope_reps']]
     .forEach(([id, k]) => countUp($(id), S.sum(k)));
@@ -324,6 +364,83 @@ function fillNumbers(daily, S, updated) {
     [[+r.month.slice(5) + '月'], [r.run_km.toFixed(1), 'km'], [r.run_days], [r.active_days], [r.push], [r.sit], [r.squat], [r.sleep23]]
       .forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });
   }
+}
+
+function bestIn(records, lo, hi) {
+  const rs = records.filter((r) => +r.distance_km >= lo && +r.distance_km <= hi && +r.seconds > 0);
+  return rs.length ? rs.reduce((a, r) => (+r.seconds < +a.seconds ? r : a)) : null;
+}
+function hms(s) { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); }
+function todayJST() { const n = new Date(Date.now() + 9 * 3600 * 1000); return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate())); }
+function weekly(daily) {
+  const m = d3.rollup(daily, (rs) => Math.round(d3.sum(rs, (r) => +r.run_km) * 10) / 10, (r) => +d3.utcMonday.floor(utc(r.date)));
+  const start = d3.utcMonday.floor(utc(daily[0].date)), end = d3.utcMonday.floor(utc(daily[daily.length - 1].date));
+  const out = d3.utcMonday.range(start, d3.utcDay.offset(end, 1)).map((d) => ({ d, km: m.get(+d) || 0 }));
+  out.forEach((w, i) => { const p = out[i - 1]; w.jump = !!p && p.km >= 5 && w.km >= p.km * 1.3; });
+  return out;
+}
+function fillRace(daily, S, records) {
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const race = utc(RACE.date), today = todayJST();
+  const days = Math.round((race - today) / 86400000);
+  set('race-date', d3.utcFormat('%Y.%m.%d')(race) + '（' + '日月火水木金土'[race.getUTCDay()] + '）');
+  set('race-days', days >= 0 ? days : 'DONE'); set('race-target', RACE.targetLabel);
+  set('race-pace', mmss(RACE.targetSec / RACE.distance)); set('race-weeks', Math.max(0, Math.ceil(days / 7)));
+  const last = S.monthly[S.monthly.length - 1], goal = MONTH_GOALS[last.month];
+  set('mg-label', +last.month.slice(5) + '月の目標');
+  set('mg-done', fmt(last.run_km, 1));
+  if (goal) {
+    set('mg-goal', ' / ' + goal + 'km');
+    set('mg-note', last.run_km >= goal ? '目標達成！' : `あと ${fmt(goal - last.run_km, 1)}km`);
+    requestAnimationFrame(() => { $('mg-bar').style.width = Math.min(100, last.run_km / goal * 100) + '%'; });
+  } else { set('mg-goal', 'km'); set('mg-note', '目標は未設定'); }
+  const W = weekly(daily), cur = W[W.length - 1], prev = W[W.length - 2];
+  set('wk-km', fmt(cur.km, 1));
+  set('wk-note', prev ? `先週 ${fmt(prev.km, 1)}km` + (cur.jump ? ' ・ 急増に注意' : '') : '—');
+  const p5 = bestIn(records, 4.95, 5.5), ph = bestIn(records, 21.0, 21.5);
+  set('pb5', p5 ? p5.time : '—'); set('pb5-n', p5 ? `${md(p5.date)} ・ ${p5.pace} /KM` : 'タイム記録待ち');
+  set('pbh', ph ? hms(+ph.seconds) : '—'); set('pbh-n', ph ? `${md(ph.date)} ・ ${ph.pace} /KM` : 'タイム記録待ち');
+}
+
+function drawWeekly(daily) {
+  const el = $('weekly'), H = 240, mg = {t: 24, r: 6, b: 26, l: 6};
+  const rows = weekly(daily).slice(-16);
+  const [svg, W] = svgIn(el, H, '週ごとの走行距離の棒グラフ'); defs(svg);
+  const x = d3.scaleBand().domain(rows.map((r) => +r.d)).range([mg.l, W - mg.r]).padding(0.25);
+  const y = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.km) || 1]).nice().range([H - mg.b, mg.t]);
+  const tp = tip(el);
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(+r.d)).attr('width', x.bandwidth()).attr('rx', 3)
+    .attr('y', (r) => y(r.km)).attr('height', (r) => y(0) - y(r.km)).style('fill', (r) => r.jump ? 'var(--run)' : 'url(#gBar)')
+    .on('pointermove', (ev, r) => tp.show(ev, `${md(r.d.toISOString().slice(0, 10))}〜の週：${fmt(r.km, 1)}km${r.jump ? '（前週から急増）' : ''}`)).on('pointerleave', () => tp.hide());
+  const narrow = W < 560;
+  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(+r.d) + x.bandwidth() / 2).attr('y', (r) => y(r.km) - 6).attr('text-anchor', 'middle')
+    .style('fill', 'var(--navy)').style('font-weight', 700).text((r, i) => (r.km && (!narrow || i % 2 === rows.length % 2 || i === rows.length - 1)) ? fmt(r.km, 1) : '');
+  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(+r.d) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle')
+    .text((r, i) => (!narrow || i % 2 === 0) ? md(r.d.toISOString().slice(0, 10)) : '');
+}
+
+function drawPace(records) {
+  const el = $('pace'), H = 240, mg = {t: 18, r: 18, b: 26, l: 48};
+  const rows = records.filter((r) => +r.seconds > 0 && +r.distance_km > 0).map((r) => ({...r, d: utc(r.date), p: +r.seconds / +r.distance_km})).sort((a, b) => a.d - b.d);
+  if (!rows.length) return;
+  const [svg, W] = svgIn(el, H, '1kmあたりのペースの推移。下に行くほど速い');
+  const x = d3.scaleUtc().domain([d3.utcDay.offset(d3.min(rows, (r) => r.d), -4), d3.utcDay.offset(d3.max(rows, (r) => r.d), 4)]).range([mg.l, W - mg.r]);
+  const y = d3.scaleLinear().domain([d3.min(rows, (r) => r.p) - 10, d3.max(rows, (r) => r.p) + 10]).range([H - mg.b, mg.t]);
+  svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y).attr('y2', y).style('stroke', 'var(--grid)');
+  svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', mg.l - 8).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text(mmss);
+  const target = RACE.targetSec / RACE.distance;
+  if (target > y.domain()[0] && target < y.domain()[1]) {
+    svg.append('line').attr('x1', mg.l).attr('x2', W - mg.r).attr('y1', y(target)).attr('y2', y(target)).style('stroke', 'var(--blue)').style('stroke-dasharray', '6 5');
+    svg.append('text').attr('x', W - mg.r).attr('y', y(target) - 6).attr('text-anchor', 'end').style('fill', 'var(--blue)').text('HALF TARGET ' + mmss(target));
+  }
+  const months = d3.utcMonth.range(d3.utcMonth.ceil(x.domain()[0]), x.domain()[1]);
+  svg.append('g').selectAll('text').data(months).join('text').attr('x', x).attr('y', H - 8).attr('text-anchor', 'middle').text((d) => d3.utcFormat('%b')(d).toUpperCase());
+  svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.p))).style('fill', 'none').style('stroke', 'var(--sky)').style('stroke-width', 1.5).style('opacity', .6);
+  const r = d3.scaleSqrt().domain([0, 21.1]).range([3, 9]);
+  const tp = tip(el);
+  svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (d) => x(d.d)).attr('cy', (d) => y(d.p)).attr('r', (d) => r(+d.distance_km))
+    .style('fill', 'var(--blue)').style('fill-opacity', .85).style('stroke', '#fff').style('stroke-width', 1.5)
+    .on('pointermove', (ev, d) => tp.show(ev, `${md(d.date)}：${d.distance_km}km ${d.time}（1km ${mmss(d.p)}）`)).on('pointerleave', () => tp.hide());
 }
 
 function svgIn(el, H, label) {
@@ -399,7 +516,7 @@ function drawPb(records) {
   svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.d)).attr('cy', (r) => y(r.s)).attr('r', 5)
     .style('fill', (r, i) => i === rows.length - 1 ? 'var(--run)' : '#fff').style('stroke', 'var(--run)').style('stroke-width', 2)
     .on('pointermove', (ev, r) => tp.show(ev, `${md(r.date)}：${r.time}（1km ${r.pace}）`)).on('pointerleave', () => tp.hide());
-  const narrow = W < 460;
+  const narrow = W < 640;
   svg.append('g').selectAll('text').data(rows).join('text').attr('class', 'big').attr('x', (r) => x(r.d)).attr('y', (r) => y(r.s) - 12).attr('text-anchor', 'middle')
     .text((r, i) => (!narrow || i === 0 || i === rows.length - 1) ? r.time : '');
 }
@@ -438,8 +555,8 @@ function drawHeat(daily) {
 Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json())])
   .then(([d, rec]) => {
     const daily = d.rows, records = rec.rows, S = summarize(daily, records);
-    fillNumbers(daily, S, d.updated);
-    const drawAll = () => { drawMonthly(S); drawCum(S); drawPb(records); drawHeat(daily); firstDraw = false; };
+    fillNumbers(daily, S, d.updated, records);
+    const drawAll = () => { drawMonthly(S); drawCum(S); drawWeekly(daily); drawPb(records); drawPace(records); drawHeat(daily); firstDraw = false; };
     drawAll();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(drawAll, 150); });
   })

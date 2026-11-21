@@ -238,11 +238,12 @@ const QUOTES = [
   { en: "何も言えねぇ。", ja: "", by: "北島康介" },
   { en: "今まで生きてきた中で、一番幸せです。", ja: "", by: "岩崎恭子" }
 ];
+const NAMES_JA = {"Eliud Kipchoge": "エリウド・キプチョゲ", "Steve Prefontaine": "スティーブ・プリフォンテーン", "Bill Bowerman": "ビル・バウワーマン", "John Bingham": "ジョン・ビンガム", "Dean Karnazes": "ディーン・カーナゼス", "Emil Zátopek": "エミール・ザトペック", "Kathrine Switzer": "キャスリン・スウィッツァー", "Haruki Murakami": "村上春樹", "Roger Bannister": "ロジャー・バニスター", "Usain Bolt": "ウサイン・ボルト", "Michael Phelps": "マイケル・フェルプス", "Michael Jordan": "マイケル・ジョーダン", "Wayne Gretzky": "ウェイン・グレツキー", "Muhammad Ali": "モハメド・アリ", "Vince Lombardi": "ヴィンス・ロンバルディ", "Kobe Bryant": "コービー・ブライアント", "Serena Williams": "セリーナ・ウィリアムズ", "Billie Jean King": "ビリー・ジーン・キング", "Pelé": "ペレ", "Jesse Owens": "ジェシー・オーエンス", "Bruce Lee": "ブルース・リー", "John Wooden": "ジョン・ウッデン", "Lionel Messi": "リオネル・メッシ", "Cristiano Ronaldo": "クリスティアーノ・ロナウド", "Jackie Joyner-Kersee": "ジャッキー・ジョイナー・カーシー", "Wilma Rudolph": "ウィルマ・ルドルフ", "Mike Tyson": "マイク・タイソン", "Yogi Berra": "ヨギ・ベラ", "Simone Biles": "シモーン・バイルズ", "Derek Jeter": "デレク・ジーター", "Dan Gable": "ダン・ゲーブル", "Arthur Ashe": "アーサー・アッシュ"};
 function showQuote() {
   const now = new Date(Date.now() + 9 * 3600 * 1000); // 日本時間で日替わり
   const day = Math.floor(now.getTime() / 86400000);
   const q = QUOTES[day % QUOTES.length];
-  $('q-en').textContent = q.en; $('q-ja').textContent = q.ja; $('q-ja').hidden = !q.ja; $('q-by').textContent = '— ' + q.by;
+  $('q-en').textContent = q.en; $('q-ja').textContent = q.ja; $('q-ja').hidden = !q.ja; $('q-by').textContent = '— ' + q.by + (NAMES_JA[q.by] ? ' / ' + NAMES_JA[q.by] : '');
 }
 showQuote();
 

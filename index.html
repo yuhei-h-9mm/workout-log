@@ -360,7 +360,7 @@ function fillNumbers(daily, S, updated, records) {
    ['s-db','dumbbell_reps'],['s-roller','roller_reps'],['s-plank','plank_sec'],['s-glute','glute_sets'],['s-jump','jumprope_reps']]
     .forEach(([id, k]) => countUp($(id), S.sum(k)));
   const tb = $('mtable'); tb.replaceChildren();
-  for (const r of S.monthly.slice(-6).reverse()) {
+  for (const r of S.monthly.slice(-6)) {
     const tr = tb.insertRow();
     [[+r.month.slice(5) + '月'], [r.run_km.toFixed(1), 'km'], [(window.NIKE && window.NIKE.get(r.month)) ? window.NIKE.get(r.month).avg_pace : '—'], [r.run_days], [r.active_days], [r.push], [r.sit], [r.squat], [r.sleep23]]
       .forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });

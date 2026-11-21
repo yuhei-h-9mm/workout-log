@@ -71,6 +71,14 @@
    "seconds": 2659,
    "pace": "4:26",
    "note": "10km自己ベスト（Nike計測 44:19。日報では44:26、Nikeの日付は11/14）"
+  },
+  {
+   "date": "2026-11-21",
+   "distance_km": 10.06,
+   "time": "48:59",
+   "seconds": 2939,
+   "pace": "4:52",
+   "note": "Nike Run Club（平均心拍167）"
   }
  ]
 }

@@ -57,16 +57,17 @@ body { margin: 0; color: var(--fg); font-family: var(--jp); -webkit-font-smoothi
 .track span { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, #ffffff, #d8f3ff); border-radius: 4px; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
 
 /* sections */
-.sec-h { display: flex; align-items: baseline; gap: 12px; margin: 0 0 16px; }
+.sec-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 16px; }
 .sec-h h2 { font-family: var(--num); font-size: 34px; letter-spacing: .03em; margin: 0; line-height: 1; color: var(--navy); }
 .sec-h span { font-size: 13px; color: var(--muted); }
 .sec-h::before { content: ""; width: 4px; height: 26px; background: var(--blue); transform: skewX(-15deg); align-self: center; }
 .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; position: relative; overflow: hidden; box-shadow: 0 6px 20px -14px rgba(13,27,58,.25); }
 .card .k { font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; }
 .card .j { font-size: 12px; color: var(--muted); margin-left: 6px; letter-spacing: 0; text-transform: none; font-family: var(--jp); font-weight: 400; }
-.card .v { font-family: var(--num); font-size: 52px; line-height: 1; margin-top: 10px; color: var(--navy); }
+.card .v { font-family: var(--num); font-size: 52px; line-height: 1; margin-top: 10px; color: var(--navy); white-space: nowrap; }
 .card .v small { font-family: var(--jp); font-size: 13px; color: var(--muted); margin-left: 4px; font-weight: 500; }
 .card .n { font-size: 12px; color: var(--muted); margin-top: 8px; font-family: var(--en); }
 .card.pb { background: linear-gradient(140deg, #0d1b3a 0%, #17306b 100%); border-color: transparent; color: #fff; }
@@ -79,7 +80,7 @@ body { margin: 0; color: var(--fg); font-family: var(--jp); -webkit-font-smoothi
 .chart-card h3 { font-family: var(--en); font-size: 12px; font-weight: 800; letter-spacing: .16em; margin: 0; text-transform: uppercase; color: var(--navy); }
 .chart-card p { font-size: 12px; color: var(--muted); margin: 4px 0 12px; }
 .chart { position: relative; min-height: 240px; }
-.heat { position: relative; min-height: 170px; }
+.heat { position: relative; min-height: 170px; overflow-x: auto; overflow-y: hidden; }
 svg text { fill: var(--muted); font-size: 11px; font-family: var(--en); }
 svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 .tip { position: absolute; pointer-events: none; background: var(--navy); color: #fff; border-radius: 8px; padding: 6px 10px;
@@ -102,7 +103,19 @@ tbody tr:hover { background: var(--panel2); }
 .err { color: var(--run); font-size: 13px; }
 
 @media (prefers-reduced-motion: reduce) { .track span { transition: none; } }
-@media (max-width: 520px) { .hs + .hs { padding-left: 10px; } .hs .v { font-size: 32px; } .card .v { font-size: 44px; } }
+@media (max-width: 760px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) {
+  .wrap { padding: 20px 14px 40px; gap: 32px; }
+  .hero { padding: 24px 20px 20px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .hs, .hs + .hs { padding: 14px 0 0; border-left: none; }
+  .hs .v { font-size: 34px; }
+  .card { padding: 14px; }
+  .card .v { font-size: 40px; }
+  .sec-h span { flex-basis: 100%; padding-left: 16px; }
+  .quote { padding-left: 28px; }
+  .quote::before { font-size: 52px; }
+}
 </style>
 </head>
 <body>
@@ -147,7 +160,7 @@ tbody tr:hover { background: var(--panel2); }
 
   <section>
     <div class="sec-h"><h2>STRENGTH</h2><span>筋トレ（6〜7月は回数、8月からは動画セット数で記録）</span></div>
-    <div class="grid4">
+    <div class="grid3">
       <div class="card accent-str"><div class="k">Push-ups<span class="j">腕立て</span></div><div class="v"><span id="s-push">—</span><small>回</small></div><div class="n">+ <span id="s-push-sets">—</span> SETS</div></div>
       <div class="card accent-str"><div class="k">Sit-ups<span class="j">腹筋</span></div><div class="v"><span id="s-sit">—</span><small>回</small></div><div class="n">+ <span id="s-sit-sets">—</span> SETS</div></div>
       <div class="card accent-str"><div class="k">Squats<span class="j">スクワット</span></div><div class="v"><span id="s-squat">—</span><small>回</small></div><div class="n">+ <span id="s-squat-sets">—</span> SETS</div></div>
@@ -395,8 +408,12 @@ function drawHeat(daily) {
   const el = $('heat'), rows = daily.map((r) => ({...r, d: utc(r.date)}));
   const start = d3.utcSunday.floor(rows[0].d), weeks = d3.utcSunday.count(start, rows[rows.length - 1].d) + 1;
   const W0 = el.clientWidth || 320, lab = 22, top = 18, gap = 3;
-  const cell = Math.max(8, Math.min(24, Math.floor((W0 - lab) / weeks) - gap)), step = cell + gap, H = top + 7 * step;
-  const [svg] = svgIn(el, H, '日ごとの運動の有無を色で示したカレンダー');
+  const cell = Math.max(14, Math.min(34, Math.floor((W0 - lab) / weeks) - gap)), step = cell + gap, H = top + 7 * step;
+  const need = lab + weeks * step;
+  el.querySelectorAll('svg').forEach((x) => x.remove());
+  const svg = d3.select(el).append('svg').attr('width', Math.max(need, W0)).attr('height', H).attr('viewBox', `0 0 ${Math.max(need, W0)} ${H}`)
+    .attr('role', 'img').attr('aria-label', '日ごとの運動の有無を色で示したカレンダー').style('display', 'block');
+  if (need > W0) el.scrollLeft = need;
   const col = (r) => +r.run_day && +r.strength_day ? 'var(--both)' : +r.run_day ? 'var(--run)' : +r.strength_day ? 'var(--str)' : 'var(--off)';
   const tp = tip(el);
   svg.append('g').selectAll('rect').data(rows).join('rect')

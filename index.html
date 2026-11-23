@@ -117,7 +117,7 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 
 /* recent */
 .recent { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.rc { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: 0 6px 20px -14px rgba(13,27,58,.25); display: flex; flex-direction: column; gap: 14px; }
+.rc { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: inset 3px 0 0 var(--str), 0 6px 20px -14px rgba(13,27,58,.25); display: flex; flex-direction: column; gap: 14px; }
 .rc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .rc-date { font-family: var(--num); font-size: 26px; line-height: 1; color: var(--navy); }
 .rc-title { font-size: 13px; color: var(--muted); margin-top: 4px; }
@@ -506,13 +506,7 @@ function fillRecent(daily, records, S) {
       const st = el('div', 'rc-stats');
       const stat = (k, v, unit, diff) => { const c = el('div'); c.append(el('div', 'k', k)); const vv = el('div', 'v', v); if (unit) vv.append(el('small', null, unit)); c.append(vv); if (diff) c.append(diff); st.append(c); };
       stat('Distance', fmt(+r.run_km, 2), 'km');
-      let diff = null;
-      if (rec) {
-        const i = timed.findIndex((t) => t.date === rec.date), prev = i > 0 ? timed[i - 1] : null;
-        if (prev) { const d = Math.round(+rec.seconds / +rec.distance_km - +prev.seconds / +prev.distance_km);
-          diff = el('div', 'd ' + (d < 0 ? 'up' : d > 0 ? 'down' : ''), d === 0 ? '前回と同じ' : `前回比 ${d < 0 ? '−' : '+'}${Math.abs(d)}秒`); }
-      }
-      stat('Pace', rec ? rec.pace : '—', rec ? '/km' : '', diff);
+      stat('Pace', rec ? rec.pace : '—', rec ? '/km' : '');
       stat('Time', rec ? rec.time : '—');
       stat('Heart Rate', rec && rec.hr ? rec.hr : '—', rec && rec.hr ? 'bpm' : '');
       card.append(st);

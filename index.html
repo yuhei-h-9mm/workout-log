@@ -192,7 +192,7 @@ tbody tr:hover { background: var(--panel2); }
     <div class="grid4" style="margin-bottom:12px">
       <div class="card pb"><div class="k">10K Personal Best<span class="j">10km 自己ベスト</span></div><div class="v" id="t-best">—</div><div class="n" id="t-best-date">—</div></div>
       <div class="card accent-run"><div class="k">Half Best<span class="j">ハーフ 自己ベスト</span></div><div class="v" id="pbh">—</div><div class="n" id="pbh-n">—</div></div>
-      <div class="card accent-run"><div class="k">10K Goal<span class="j">10km 年内目標 44:00</span></div><div class="v"><span id="t-gap">—</span><small>秒</small></div><div class="n">目標まであと</div></div>
+      <div class="card accent-run"><div class="k">10K Goal<span class="j">10km 年内目標 44:00</span></div><div class="v"><span id="t-gap">—</span><small id="t-gap-u">秒</small></div><div class="n" id="t-gap-n">目標まであと</div></div>
       <div class="card accent-run"><div class="k">Half Goal<span class="j">ハーフ 年内目標 1:40:00</span></div><div class="v"><span id="h-gap">—</span></div><div class="n" id="h-gap-n">目標まであと</div></div>
     </div>
     <div class="grid2">
@@ -361,7 +361,7 @@ function fillNumbers(daily, S, updated, records) {
   set('kyoto', Math.round(S.km / KYOTO * 100));
   requestAnimationFrame(() => { $('k-bar').style.width = Math.min(100, S.km / KYOTO * 100) + '%'; });
   set('t-best', S.b ? S.b.time : '—'); set('t-best-date', S.b ? `${md(S.b.date)} ・ ${S.b.pace} /KM` : '—');
-  set('t-gap', S.b ? Math.max(0, +S.b.seconds - GOAL_10K) : '—');
+  if (S.b) { const g = +S.b.seconds - GOAL_10K; if (g > 0) set('t-gap', g); else { set('t-gap', '達成！'); set('t-gap-u', ''); set('t-gap-n', `${md(S.b.date)}に目標クリア`); } } else set('t-gap', '—');
   const last = S.monthly[S.monthly.length - 1];
   set('t-month', fmt(last.run_km, 1)); set('t-month-days', `${+last.month.slice(5)}月 ・ ${last.run_days}日走った`);
   fillRace(daily, S, records);

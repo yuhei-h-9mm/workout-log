@@ -254,7 +254,7 @@ tbody tr:hover { background: var(--panel2); }
       </div>
       <div class="race-side">
         <div class="card accent-run"><div class="k">Monthly Goal<span class="j" id="mg-label">今月の目標</span></div><div class="v"><span id="mg-done">—</span><small id="mg-goal">—</small></div><div class="goalbar"><span id="mg-bar"></span></div><div class="n" id="mg-note">—</div></div>
-        <div class="card accent-run"><div class="k">This Week<span class="j">今週（月曜はじまり）</span></div><div class="v"><span id="wk-km">—</span><small>km</small></div><div class="n" id="wk-note">—</div></div>
+        <div class="card accent-run"><div class="k">This Week<span class="j">今週（日曜はじまり）</span></div><div class="v"><span id="wk-km">—</span><small>km</small></div><div class="n" id="wk-note">—</div></div>
       </div>
     </div>
   </section>
@@ -271,7 +271,7 @@ tbody tr:hover { background: var(--panel2); }
       <div class="card chart-card"><h3>Monthly Distance</h3><p>月別の走行距離（直近6ヶ月・今月は途中まで）</p><div class="chart" id="monthly"></div></div>
       <div class="card chart-card"><h3>Cumulative</h3><p>走行距離の累計</p><div class="chart" id="cum"></div></div>
     </div>
-    <div class="card chart-card" style="margin-top:12px"><h3>Weekly Distance</h3><p>週ごとの走行距離（直近16週・月曜はじまり）</p><div class="chart" id="weekly"></div>
+    <div class="card chart-card" style="margin-top:12px"><h3>Weekly Distance</h3><p>週ごとの走行距離（直近16週・日曜はじまり）</p><div class="chart" id="weekly"></div>
       <div class="warn-legend"><span><i style="background:linear-gradient(#1f5bff,#22b8ff)"></i>通常</span><span><i style="background:var(--run)"></i>前週より30%以上増えた週（オーバーワーク注意）</span></div></div>
     <div class="grid2" style="margin-top:12px">
       <div class="card chart-card"><h3>10K Progress</h3><p>10kmタイムの推移（点線が年内目標）</p><div class="chart" id="pb"></div></div>
@@ -466,9 +466,9 @@ function bestIn(records, lo, hi) {
 function hms(s) { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); }
 function todayJST() { const n = new Date(Date.now() + 9 * 3600 * 1000); return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate())); }
 function weekly(daily) {
-  const m = d3.rollup(daily, (rs) => Math.round(d3.sum(rs, (r) => +r.run_km) * 10) / 10, (r) => +d3.utcMonday.floor(utc(r.date)));
-  const start = d3.utcMonday.floor(utc(daily[0].date)), end = d3.utcMonday.floor(utc(daily[daily.length - 1].date));
-  const out = d3.utcMonday.range(start, d3.utcDay.offset(end, 1)).map((d) => ({ d, km: m.get(+d) || 0 }));
+  const m = d3.rollup(daily, (rs) => Math.round(d3.sum(rs, (r) => +r.run_km) * 10) / 10, (r) => +d3.utcSunday.floor(utc(r.date)));
+  const start = d3.utcSunday.floor(utc(daily[0].date)), end = d3.utcSunday.floor(utc(daily[daily.length - 1].date));
+  const out = d3.utcSunday.range(start, d3.utcDay.offset(end, 1)).map((d) => ({ d, km: m.get(+d) || 0 }));
   out.forEach((w, i) => { const p = out[i - 1]; w.jump = !!p && p.km >= 5 && w.km >= p.km * 1.3; });
   return out;
 }

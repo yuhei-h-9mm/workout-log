@@ -185,6 +185,7 @@ tbody tr:hover { background: var(--panel2); }
       <div class="card pb"><div class="k">10K Personal Best<span class="j">10km 自己ベスト</span></div><div class="v" id="t-best">—</div><div class="n" id="t-best-date">—</div></div>
       <div class="card accent-run"><div class="k">Half Best<span class="j">ハーフ 自己ベスト</span></div><div class="v" id="pbh">—</div><div class="n" id="pbh-n">—</div></div>
       <div class="card accent-run"><div class="k">10K Goal<span class="j">10km 年内目標 44:00</span></div><div class="v"><span id="t-gap">—</span><small>秒</small></div><div class="n">目標まであと</div></div>
+      <div class="card accent-run"><div class="k">Half Goal<span class="j">ハーフ 年内目標 1:40:00</span></div><div class="v"><span id="h-gap">—</span></div><div class="n" id="h-gap-n">目標まであと</div></div>
     </div>
     <div class="grid2">
       <div class="card chart-card"><h3>Monthly Distance</h3><p>月別の走行距離（直近6ヶ月・今月は途中まで）</p><div class="chart" id="monthly"></div></div>
@@ -400,7 +401,8 @@ function fillRace(daily, S, records) {
   set('wk-note', prev ? `先週 ${fmt(prev.km, 1)}km` + (cur.jump ? ' ・ 急増に注意' : '') : '—');
   const p5 = bestIn(records, 4.95, 5.5), ph = bestIn(records, 21.0, 21.5);
   set('pb5', p5 ? p5.time : '—'); set('pb5-n', p5 ? `${md(p5.date)} ・ ${p5.pace} /KM` : 'タイム記録待ち');
-  set('pbh', ph ? hms(+ph.seconds) : '—'); set('pbh-n', ph ? `${md(ph.date)} ・ ${ph.pace} /KM` : 'タイム記録待ち');
+  set('pbh', ph ? hms(+ph.seconds) : '—');
+  if (ph) { const g = +ph.seconds - RACE.targetSec; set('h-gap', g > 0 ? hms(g) : '達成'); set('h-gap-n', g > 0 ? '目標まであと（分:秒）' : '目標達成！'); } set('pbh-n', ph ? `${md(ph.date)} ・ ${ph.pace} /KM` : 'タイム記録待ち');
 }
 
 function drawWeekly(daily) {

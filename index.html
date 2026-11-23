@@ -162,6 +162,7 @@ tbody tr:hover { background: var(--panel2); }
       <div class="hs"><div class="k">Active Days</div><div class="v"><span id="h-active">—</span><small>日</small></div></div>
       <div class="hs"><div class="k">Run Days</div><div class="v"><span id="h-run">—</span><small>日</small></div></div>
       <div class="hs"><div class="k">Best Streak</div><div class="v"><span id="h-streak">—</span><small>日連続</small></div></div>
+      <div class="hs"><div class="k">No Alcohol</div><div class="v"><span id="h-sober">—</span><small>日継続中</small></div></div>
       <div class="hs"><div class="k">Longest</div><div class="v"><span id="h-longest">—</span><small>km</small></div></div>
     </div>
     <div class="route">
@@ -568,6 +569,7 @@ Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records
     window.NIKE = new Map(nike.rows.map((r) => [r.month, r]));
     const daily = d.rows, records = rec.rows, S = summarize(daily, records);
     fillNumbers(daily, S, d.updated, records);
+    if (d.last_drink) { const n = Math.round((todayJST() - utc(d.last_drink)) / 86400000); const el = $('h-sober'); if (el) el.textContent = n; }
     const drawAll = () => { drawMonthly(S); drawCum(S); drawWeekly(daily); drawPb(records); drawPace(records); drawHeat(daily); firstDraw = false; };
     drawAll();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(drawAll, 150); });

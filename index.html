@@ -141,6 +141,7 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 .ms-progress { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
 .ms-p { background: var(--navy); color: #fff; border-radius: 14px; padding: 16px 18px; min-width: 0; overflow: hidden; }
 .ms-p .k { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #7fd8ff; }
+.ms-p .kbest { color: #fff; letter-spacing: .08em; }
 .ms-p .row { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding-bottom: 4px; scrollbar-width: thin; }
 .ms-p .row > * { flex: none; }
 .ms-p .row { align-items: flex-end; }
@@ -596,7 +597,7 @@ function fillMilestones(g) {
   const pr = $('ms-progress'), tl = $('tl'); if (!pr || !tl) return;
   pr.replaceChildren(); tl.replaceChildren();
   for (const p of g.progress || []) {
-    const c = el('div', 'ms-p'); c.append(el('div', 'k', p.label));
+    const c = el('div', 'ms-p'); const kk = el('div', 'k', p.label + ' : '); kk.append(el('span', 'kbest', p.to)); c.append(kk);
     const row = el('div', 'row');
     const step = (cls, t, d) => { const w = el('span', 'step'); w.append(el('span', cls, t), el('span', 'sd', d || '')); return w; };
     for (const st of p.steps || []) row.append(typeof st === 'string' ? step('from', st, '') : step('from', st.t, st.d), el('span', 'arrow', '→'));

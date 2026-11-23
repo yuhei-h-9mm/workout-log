@@ -362,7 +362,7 @@ function fillNumbers(daily, S, updated, records) {
   set('kyoto', Math.round(S.km / KYOTO * 100));
   requestAnimationFrame(() => { $('k-bar').style.width = Math.min(100, S.km / KYOTO * 100) + '%'; });
   set('t-best', S.b ? S.b.time : '—'); set('t-best-date', S.b ? `${md(S.b.date)} ・ ${S.b.pace} /KM` : '—');
-  if (S.b) { const g = +S.b.seconds - GOAL_10K; if (g > 0) set('t-gap', g); else { set('t-gap', '達成！'); set('t-gap-u', ''); set('t-gap-n', `${md(S.b.date)}に目標クリア`); } } else set('t-gap', '—');
+  if (S.b) { const g = +S.b.seconds - GOAL_10K; if (g > 0) set('t-gap', g); else { set('t-gap', 'CLEAR!'); set('t-gap-u', ''); set('t-gap-n', `${md(S.b.date)}に目標クリア`); } } else set('t-gap', '—');
   const last = S.monthly[S.monthly.length - 1];
   set('t-month', fmt(last.run_km, 1)); set('t-month-days', `${+last.month.slice(5)}月 ・ ${last.run_days}日走った`);
   fillRace(daily, S, records);
@@ -411,7 +411,7 @@ function fillRace(daily, S, records) {
   const p5 = bestIn(records, 4.95, 5.5), ph = bestIn(records, 21.0, 21.5);
   set('pb5', p5 ? p5.time : '—'); set('pb5-n', p5 ? `${md(p5.date)} ・ ${p5.pace} /KM` : 'タイム記録待ち');
   set('pbh', ph ? hms(+ph.seconds) : '—');
-  if (ph) { const g = +ph.seconds - RACE.targetSec; set('h-gap', g > 0 ? hms(g) : '達成'); set('h-gap-n', g > 0 ? '目標まであと（分:秒）' : '目標達成！'); } set('pbh-n', ph ? `${md(ph.date)} ・ ${ph.pace} /KM` : 'タイム記録待ち');
+  if (ph) { const g = +ph.seconds - RACE.targetSec; set('h-gap', g > 0 ? hms(g) : 'CLEAR!'); set('h-gap-n', g > 0 ? '目標まであと（分:秒）' : '目標達成！'); } set('pbh-n', ph ? `${md(ph.date)} ・ ${ph.pace} /KM` : 'タイム記録待ち');
 }
 
 function drawWeekly(daily) {

@@ -138,11 +138,11 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 @media (max-width: 420px) { .rc-stats { grid-template-columns: repeat(2, 1fr); } }
 
 /* milestones */
-.ms-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.ms-progress { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
 .ms-p { background: var(--navy); color: #fff; border-radius: 14px; padding: 16px 18px; }
 .ms-p .k { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #7fd8ff; }
-.ms-p .row { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
-.ms-p .from { font-family: var(--num); font-size: 26px; color: rgba(255,255,255,.55); text-decoration: line-through; text-decoration-thickness: 2px; }
+.ms-p .row { display: flex; align-items: baseline; gap: 4px 8px; margin-top: 8px; flex-wrap: wrap; }
+.ms-p .from { font-family: var(--num); font-size: 22px; color: rgba(255,255,255,.55); text-decoration: line-through; text-decoration-thickness: 2px; }
 .ms-p .arrow { color: #7fd8ff; font-family: var(--en); font-weight: 800; }
 .ms-p .to { font-family: var(--num); font-size: 40px; line-height: 1; }
 .ms-p .n { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 6px; }
@@ -591,8 +591,10 @@ function fillMilestones(g) {
   pr.replaceChildren(); tl.replaceChildren();
   for (const p of g.progress || []) {
     const c = el('div', 'ms-p'); c.append(el('div', 'k', p.label));
-    const row = el('div', 'row'); row.append(el('span', 'from', p.from), el('span', 'arrow', '→'), el('span', 'to', p.to)); c.append(row);
-    c.append(el('div', 'n', `${p.from_note} → ${p.to_note}`)); pr.append(c);
+    const row = el('div', 'row');
+    for (const st of p.steps || [p.from]) row.append(el('span', 'from', st), el('span', 'arrow', '→'));
+    row.append(el('span', 'to', p.to)); c.append(row);
+    c.append(el('div', 'n', p.note || `${p.from_note} → ${p.to_note}`)); pr.append(c);
   }
   const today = todayJST();
   for (const r of g.rows) {

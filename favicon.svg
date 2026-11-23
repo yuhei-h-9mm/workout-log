@@ -3,7 +3,7 @@
   <rect width="64" height="64" rx="14" fill="url(#g)"/>
   <g transform="translate(64 0) scale(-1 1)">
   <g stroke="#d4ff3a" stroke-width="3" stroke-linecap="round">
-    <path d="M6 30 H14"/><path d="M4 37 H12"/><path d="M8 44 H14"/>
+    <path d="M6 24 H14"/><path d="M4 31 H12"/><path d="M8 38 H14"/>
   </g>
   <g fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M37 20 L30 35"/>

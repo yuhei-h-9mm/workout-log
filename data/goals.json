@@ -1,0 +1,21 @@
+{"rows":[
+{"date":"2026-06-07","kind":"start","title":"筋トレ開始","detail":"腕立て40回・腹筋30回・スクワット65回からスタート"},
+{"date":"2026-07-03","kind":"start","title":"3年半ぶりにランニング再開","detail":"1〜2kmのつもりが、いきなり8.2km"},
+{"date":"2026-08-10","kind":"goal","title":"5km 25:00 クリア","detail":"年内目標として最初に立てた目標"},
+{"date":"2026-08-18","kind":"goal","title":"10km 54:10 クリア","detail":"初めて20時台に走って達成"},
+{"date":"2026-08-29","kind":"goal","title":"8km 40:00 クリア","detail":"38:44（1km 4:50）"},
+{"date":"2026-08-30","kind":"goal","title":"5km 23:20 クリア／8月100km突破","detail":"5km 23:00ピッタリ。初の月間100km"},
+{"date":"2026-09-14","kind":"goal","title":"10km 50:00 クリア","detail":"48:30（1km 4:51）。新シューズと9時間睡眠"},
+{"date":"2026-09-18","kind":"goal","title":"5km 22:30 クリア","detail":"Apple Watchデビューの日"},
+{"date":"2026-09-21","kind":"goal","title":"5km 22:00・8km 38:24・10km 48:20 クリア","detail":"1km 4:40ペースで3つ同時に達成"},
+{"date":"2026-09-25","kind":"goal","title":"10km 46:20 クリア","detail":"45:48（1km 4:35）"},
+{"date":"2026-10-07","kind":"goal","title":"8km 36:00・10km 45:20 クリア","detail":"44:29（1km 4:27）。打ち合わせ8本の日に"},
+{"date":"2026-10-25","kind":"goal","title":"初ハーフ完走","detail":"21.1km 1:43:44（1km 4:55）"},
+{"date":"2026-11-23","kind":"goal","title":"10km 44:00・5km 21:30 クリア","detail":"43:59。ラスト1kmで滑り込み。5kmは21:07"},
+{"date":"2026-12-20","kind":"next","title":"足立フレンドリーマラソン ハーフ 1:40:00","detail":"年内最後の目標"}
+],
+"progress":[
+{"label":"5KM","from":"25:00","from_note":"最初の目標（8/10）","to":"21:07","to_note":"11/23"},
+{"label":"10KM","from":"54:10","from_note":"最初の目標（8/18）","to":"43:59","to_note":"11/23"},
+{"label":"MONTHLY","from":"43.8km","from_note":"7月","to":"133.5km","to_note":"10月"}
+]}

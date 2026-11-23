@@ -137,6 +137,42 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 @media (max-width: 860px) { .recent { grid-template-columns: 1fr; } .rc-stats { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 420px) { .rc-stats { grid-template-columns: repeat(2, 1fr); } }
 
+/* milestones */
+.ms-progress { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.ms-p { background: var(--navy); color: #fff; border-radius: 14px; padding: 16px 18px; }
+.ms-p .k { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #7fd8ff; }
+.ms-p .row { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.ms-p .from { font-family: var(--num); font-size: 26px; color: rgba(255,255,255,.55); text-decoration: line-through; text-decoration-thickness: 2px; }
+.ms-p .arrow { color: #7fd8ff; font-family: var(--en); font-weight: 800; }
+.ms-p .to { font-family: var(--num); font-size: 40px; line-height: 1; }
+.ms-p .n { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 6px; }
+.tl { position: relative; padding-left: 26px; }
+.tl::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--blue), var(--sky)); }
+.tl-item { position: relative; padding: 0 0 18px; }
+.tl-item::before { content: ""; position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--blue); }
+.tl-item.start::before { background: var(--run); box-shadow: 0 0 0 2px var(--run); }
+.tl-item.next::before { background: #fff; box-shadow: 0 0 0 2px var(--blue); }
+.tl-date { font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--muted); }
+.tl-title { font-weight: 700; font-size: 15px; margin-top: 2px; color: var(--navy); }
+.tl-item.next .tl-title { color: var(--blue); }
+.tl-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.tl-tag { display: inline-block; font-family: var(--en); font-size: 10px; font-weight: 800; letter-spacing: .1em; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; background: var(--blue); color: #fff; }
+.tl-tag.start { background: var(--run); } .tl-tag.next { background: #fff; color: var(--blue); border: 1px solid var(--blue); }
+@media (max-width: 760px) { .ms-progress { grid-template-columns: 1fr; } }
+
+/* wrapped */
+.wr { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+.wr-card { scroll-snap-align: start; border-radius: 18px; padding: 22px; color: #fff; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+.wr-card:nth-child(4n+1) { background: linear-gradient(140deg, #1440e0, #22c1ff); }
+.wr-card:nth-child(4n+2) { background: linear-gradient(140deg, #0d1b3a, #1f5bff); }
+.wr-card:nth-child(4n+3) { background: linear-gradient(140deg, #ff6b2c, #ffb02c); }
+.wr-card:nth-child(4n+4) { background: linear-gradient(140deg, #0f7a52, #12b76a); }
+.wr-card .k { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .85; }
+.wr-card .v { font-family: var(--num); font-size: 64px; line-height: .9; margin-top: 10px; }
+.wr-card .v small { font-family: var(--jp); font-size: 15px; margin-left: 4px; opacity: .85; }
+.wr-card .t { font-size: 13px; line-height: 1.7; opacity: .92; margin-top: 12px; }
+.wr-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
 /* table */
 .tw { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-family: var(--en); font-size: 14px; }
@@ -191,6 +227,12 @@ tbody tr:hover { background: var(--panel2); }
       <div class="route-head"><span>TOKYO → KYOTO 513.6KM</span><b><span id="kyoto">—</span>%</b></div>
       <div class="track"><span id="k-bar"></span></div>
     </div>
+  </section>
+
+  <section id="wrapped" hidden>
+    <div class="sec-h"><h2>2026 WRAPPED</h2><span>2026年の振り返り</span></div>
+    <div class="wr" id="wr"></div>
+    <div class="wr-hint">← 横にスクロール →</div>
   </section>
 
   <section>
@@ -258,6 +300,12 @@ tbody tr:hover { background: var(--panel2); }
         <tbody id="mtable"></tbody>
       </table>
     </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>MILESTONES</h2><span>目標達成の歴史</span></div>
+    <div class="ms-progress" id="ms-progress"></div>
+    <div class="card"><div class="tl" id="tl"></div></div>
   </section>
 
   <section>
@@ -537,6 +585,55 @@ function fillRecent(daily, records, S) {
   if (!days.length) box.append(el('p', 'rc-empty', 'まだ記録がありません'));
 }
 
+function fillMilestones(g) {
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const pr = $('ms-progress'), tl = $('tl'); if (!pr || !tl) return;
+  pr.replaceChildren(); tl.replaceChildren();
+  for (const p of g.progress || []) {
+    const c = el('div', 'ms-p'); c.append(el('div', 'k', p.label));
+    const row = el('div', 'row'); row.append(el('span', 'from', p.from), el('span', 'arrow', '→'), el('span', 'to', p.to)); c.append(row);
+    c.append(el('div', 'n', `${p.from_note} → ${p.to_note}`)); pr.append(c);
+  }
+  const today = todayJST();
+  for (const r of g.rows) {
+    const kind = r.kind === 'next' && utc(r.date) < today ? 'goal' : r.kind;
+    const it = el('div', 'tl-item ' + kind);
+    const d = el('div', 'tl-date', d3.utcFormat('%Y.%m.%d')(utc(r.date)));
+    d.append(el('span', 'tl-tag ' + kind, kind === 'start' ? 'START' : kind === 'next' ? 'NEXT' : 'CLEAR'));
+    it.append(d, el('div', 'tl-title', r.title), el('div', 'tl-detail', r.detail)); tl.append(it);
+  }
+}
+
+function fillWrapped(daily, records, S, lastDrink) {
+  const sec = $('wrapped'), box = $('wr'); if (!sec || !box) return;
+  const today = todayJST(), q = new URLSearchParams(location.search);
+  const show = q.has('wrapped') || (today >= utc('2026-12-21') && today < utc('2027-02-01'));
+  if (!show) return;
+  sec.hidden = false; box.replaceChildren();
+  const rows = daily.filter((r) => r.date.startsWith('2026'));
+  const sum = (k) => d3.sum(rows, (r) => +r[k] || 0);
+  const card = (k, v, unit, t) => { const c = document.createElement('div'); c.className = 'wr-card';
+    const top = document.createElement('div'); const kk = document.createElement('div'); kk.className = 'k'; kk.textContent = k;
+    const vv = document.createElement('div'); vv.className = 'v'; vv.textContent = v; if (unit) { const u = document.createElement('small'); u.textContent = unit; vv.append(u); }
+    top.append(kk, vv); const tt = document.createElement('div'); tt.className = 't'; tt.textContent = t; c.append(top, tt); box.append(c); };
+  const km = Math.round(sum('run_km') * 10) / 10;
+  card('TOTAL DISTANCE', fmt(km, 1), 'km', `東京から京都（513.6km）の${Math.round(km / KYOTO * 100)}%。1年目でここまで来ました。`);
+  card('ACTIVE DAYS', sum('active_day'), '日', `6月7日から${rows.length}日のうち、${sum('active_day')}日体を動かしました。走った日は${sum('run_day')}日。`);
+  const byMonth = d3.rollups(rows, (rs) => d3.sum(rs, (r) => +r.run_km), (r) => r.month).sort((a, b) => b[1] - a[1]);
+  if (byMonth.length) card('BEST MONTH', +byMonth[0][0].slice(5) + '月', '', `いちばん走った月は${fmt(byMonth[0][1], 1)}km。`);
+  const longest = rows.reduce((a, r) => (+r.run_km > +a.run_km ? r : a), rows[0]);
+  card('LONGEST RUN', fmt(+longest.run_km, 1), 'km', `${md(longest.date)}に走った最長距離。`);
+  if (S.b) card('10K BEST', S.b.time, '', `最初の目標は54:10。そこから${hms(54 * 60 + 10 - +S.b.seconds)}縮めました。`);
+  const half = records.filter((r) => +r.distance_km >= 21 && +r.seconds > 0).sort((a, b) => +a.seconds - +b.seconds)[0];
+  if (half) card('HALF BEST', hms(+half.seconds), '', +half.seconds <= RACE.targetSec ? '目標の1:40:00をクリア！' : `目標の1:40:00まで、あと${hms(+half.seconds - RACE.targetSec)}。来年の楽しみに。`);
+  const wd = d3.rollups(rows.filter((r) => +r.run_km > 0), (rs) => rs.length, (r) => utc(r.date).getUTCDay()).sort((a, b) => b[1] - a[1]);
+  if (wd.length) card('FAVORITE DAY', '日月火水木金土'[wd[0][0]] + '曜', '', `いちばん多く走った曜日。${wd[0][1]}回走りました。`);
+  const sets = sum('pushup_sets') + sum('situp_sets') + sum('squat_sets') + sum('glute_sets');
+  card('STRENGTH', fmt(sum('pushup_reps') + sum('situp_reps') + sum('squat_reps')), '回', `腕立て・腹筋・スクワットの合計回数。ほかに動画トレーニングを${sets}セット。`);
+  if (lastDrink) { const n = Math.round((today - utc(lastDrink)) / 86400000); card('NO ALCOHOL', n, '日', `${md(lastDrink)}を最後に、お酒を飲まない日が続いています。`); }
+  card('2027', 'NEXT', '', '来年はどこまで行けるか。Keep moving.');
+}
+
 function svgIn(el, H, label) {
   el.querySelectorAll('svg').forEach((s) => s.remove());
   const W = el.clientWidth || 320;
@@ -646,12 +743,14 @@ function drawHeat(daily) {
     .style('fill', 'none').style('stroke', 'var(--navy)').style('stroke-width', 1.75).style('stroke-opacity', 0.9).style('pointer-events', 'none');
 }
 
-Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json()), fetch('data/nike.json').then((r) => r.json()).catch(() => ({rows: []}))])
-  .then(([d, rec, nike]) => {
+Promise.all([fetch('data/daily.json').then((r) => r.json()), fetch('data/records.json').then((r) => r.json()), fetch('data/nike.json').then((r) => r.json()).catch(() => ({rows: []})), fetch('data/goals.json').then((r) => r.json()).catch(() => null)])
+  .then(([d, rec, nike, goals]) => {
     window.NIKE = new Map(nike.rows.map((r) => [r.month, r]));
     const daily = d.rows, records = rec.rows, S = summarize(daily, records);
     fillNumbers(daily, S, d.updated, records);
     fillRecent(daily, records, S);
+    if (goals) fillMilestones(goals);
+    fillWrapped(daily, records, S, d.last_drink);
     if (d.last_drink) { const n = Math.round((todayJST() - utc(d.last_drink)) / 86400000); const el = $('h-sober'); if (el) el.textContent = n; }
     const drawAll = () => { drawMonthly(S); drawCum(S); drawWeekly(daily); drawPb(records); drawPace(records); drawHeat(daily); firstDraw = false; };
     drawAll();

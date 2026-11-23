@@ -143,6 +143,11 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 .ms-p .k { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .16em; color: #7fd8ff; }
 .ms-p .row { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding-bottom: 4px; scrollbar-width: thin; }
 .ms-p .row > * { flex: none; }
+.ms-p .row { align-items: flex-end; }
+.ms-p .step { display: inline-flex; flex-direction: column; align-items: flex-start; }
+.ms-p .sd { font-family: var(--en); font-size: 11px; font-weight: 700; letter-spacing: .06em; color: rgba(255,255,255,.55); margin-top: 2px; }
+.ms-p .step .to + .sd { color: #7fd8ff; }
+.ms-p .arrow { padding-bottom: 20px; }
 .ms-p .from { font-family: var(--num); font-size: 22px; color: rgba(255,255,255,.55); text-decoration: line-through; text-decoration-thickness: 2px; }
 .ms-p .arrow { color: #7fd8ff; font-family: var(--en); font-weight: 800; }
 .ms-p .to { font-family: var(--num); font-size: 40px; line-height: 1; }
@@ -593,8 +598,9 @@ function fillMilestones(g) {
   for (const p of g.progress || []) {
     const c = el('div', 'ms-p'); c.append(el('div', 'k', p.label));
     const row = el('div', 'row');
-    for (const st of p.steps || [p.from]) row.append(el('span', 'from', st), el('span', 'arrow', '→'));
-    row.append(el('span', 'to', p.to)); c.append(row);
+    const step = (cls, t, d) => { const w = el('span', 'step'); w.append(el('span', cls, t), el('span', 'sd', d || '')); return w; };
+    for (const st of p.steps || []) row.append(typeof st === 'string' ? step('from', st, '') : step('from', st.t, st.d), el('span', 'arrow', '→'));
+    row.append(step('to', p.to, p.to_date)); c.append(row);
     requestAnimationFrame(() => { row.scrollLeft = row.scrollWidth; });
     c.append(el('div', 'n', p.note || `${p.from_note} → ${p.to_note}`)); pr.append(c);
   }

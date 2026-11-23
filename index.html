@@ -128,6 +128,7 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 .rc-stats .d { font-family: var(--en); font-size: 11px; margin-top: 3px; }
 .rc-stats .d.up { color: var(--both); } .rc-stats .d.down { color: var(--run); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-head .chips { justify-content: flex-end; max-width: 55%; }
 .chip { font-family: var(--en); font-size: 11px; font-weight: 800; letter-spacing: .08em; padding: 4px 9px; border-radius: 999px; background: var(--panel2); color: var(--navy); border: 1px solid var(--line); }
 .chip.pb { background: var(--navy); color: #7fd8ff; border-color: var(--navy); }
 .chip.clear { background: linear-gradient(90deg, var(--blue), var(--sky)); color: #fff; border-color: transparent; }
@@ -486,6 +487,14 @@ function fillRecent(daily, records, S) {
   const recMap = new Map(records.map((r) => [r.date, r]));
   const timed = records.filter((r) => +r.seconds > 0).sort((a, b) => a.date < b.date ? -1 : 1);
   const days = daily.filter((r) => +r.active_day).slice(-3).reverse();
+  const MONTH_MS = [30, 50, 70, 100, 150];
+  const ms = new Map(); let mon = '', cum = 0, runs = 0;
+  for (const r of daily) {
+    if (r.month !== mon) { mon = r.month; cum = 0; }
+    const before = cum; cum = Math.round((cum + (+r.run_km || 0)) * 100) / 100;
+    if (+r.run_km > 0) runs += 1;
+    ms.set(r.date, { hit: MONTH_MS.filter((m) => before < m && cum >= m), runs: +r.run_km > 0 && runs % 10 === 0 ? runs : 0 });
+  }
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const wd = (iso) => '日月火水木金土'[utc(iso).getUTCDay()];
   for (const r of days) {
@@ -501,6 +510,8 @@ function fillRecent(daily, records, S) {
     if (rec && +rec.distance_km === 10 && +rec.seconds <= GOAL_10K) chips.append(el('span', 'chip clear', 'GOAL CLEAR'));
     if (rec && +rec.distance_km >= 21 && +rec.seconds <= RACE.targetSec) chips.append(el('span', 'chip clear', 'HALF CLEAR'));
     if (run && +r.run_km >= 15) chips.append(el('span', 'chip', 'LONG RUN'));
+    const m = ms.get(r.date);
+    if (m) { m.hit.forEach((k) => chips.append(el('span', 'chip clear', `MONTHLY ${k}KM`))); if (m.runs) chips.append(el('span', 'chip pb', `${m.runs} RUNS`)); }
     head.append(chips); card.append(head);
     if (run) {
       const st = el('div', 'rc-stats');

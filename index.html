@@ -597,7 +597,7 @@ function fillMilestones(g) {
   const pr = $('ms-progress'), tl = $('tl'); if (!pr || !tl) return;
   pr.replaceChildren(); tl.replaceChildren();
   for (const p of g.progress || []) {
-    const c = el('div', 'ms-p'); const kk = el('div', 'k', p.label + ' : '); kk.append(el('span', 'kbest', p.to)); c.append(kk);
+    const c = el('div', 'ms-p'); const kk = el('div', 'k', p.label + ' : Personal Best '); kk.append(el('span', 'kbest', p.to)); c.append(kk);
     const row = el('div', 'row');
     const step = (cls, t, d) => { const w = el('span', 'step'); w.append(el('span', cls, t), el('span', 'sd', d || '')); return w; };
     for (const st of p.steps || []) row.append(typeof st === 'string' ? step('from', st, '') : step('from', st.t, st.d), el('span', 'arrow', '→'));

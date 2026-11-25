@@ -133,6 +133,10 @@ svg text.big { fill: var(--navy); font-family: var(--num); font-size: 20px; }
 .chip.pb { background: var(--navy); color: #7fd8ff; border-color: var(--navy); }
 .chip.clear { background: linear-gradient(90deg, var(--blue), var(--sky)); color: #fff; border-color: transparent; }
 .chip.str { font-family: var(--jp); font-weight: 500; letter-spacing: 0; }
+.chip.gold { position: relative; overflow: hidden; color: #3a2400; border-color: transparent; background: linear-gradient(110deg, #ffd25a 0%, #ffb02c 45%, #ff7a2c 100%); box-shadow: 0 0 0 2px rgba(255,176,44,.25), 0 6px 16px -6px rgba(255,122,44,.7); font-size: 12px; padding: 5px 11px; }
+.chip.gold::after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); transform: skewX(-20deg); }
+@media (prefers-reduced-motion: no-preference) { .chip.gold::after { animation: shine 2.6s ease-in-out infinite; } }
+@keyframes shine { 0% { left: -60%; } 55%, 100% { left: 130%; } }
 .rc-empty { font-size: 13px; color: var(--muted); }
 @media (max-width: 860px) { .recent { grid-template-columns: 1fr; } .rc-stats { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 420px) { .rc-stats { grid-template-columns: repeat(2, 1fr); } }
@@ -543,12 +547,15 @@ function fillRecent(daily, records, S) {
   const timed = records.filter((r) => +r.seconds > 0).sort((a, b) => a.date < b.date ? -1 : 1);
   const days = daily.filter((r) => +r.active_day).slice(-3).reverse();
   const MONTH_MS = [30, 50, 70, 100, 150, 200, 250, 300, 350, 400, 450, 500];
-  const ms = new Map(); let mon = '', cum = 0, runs = 0;
+  const ms = new Map(); let mon = '', cum = 0, runs = 0, act = 0;
   for (const r of daily) {
     if (r.month !== mon) { mon = r.month; cum = 0; }
     const before = cum; cum = Math.round((cum + (+r.run_km || 0)) * 100) / 100;
     if (+r.run_km > 0) runs += 1;
-    ms.set(r.date, { hit: MONTH_MS.filter((m) => before < m && cum >= m), runs: +r.run_km > 0 && runs % 10 === 0 ? runs : 0 });
+    if (+r.active_day) act += 1;
+    ms.set(r.date, { hit: MONTH_MS.filter((m) => before < m && cum >= m),
+      runs: +r.run_km > 0 && runs >= 60 && runs % 10 === 0 ? runs : 0,
+      act: +r.active_day && act >= 100 && act % 10 === 0 ? act : 0 });
   }
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const wd = (iso) => '日月火水木金土'[utc(iso).getUTCDay()];
@@ -566,7 +573,12 @@ function fillRecent(daily, records, S) {
     if (rec && +rec.distance_km >= 21 && +rec.seconds <= RACE.targetSec) chips.append(el('span', 'chip clear', 'HALF CLEAR'));
     if (run && +r.run_km >= 15) chips.append(el('span', 'chip', 'LONG RUN'));
     const m = ms.get(r.date);
-    if (m) { m.hit.forEach((k) => chips.append(el('span', 'chip clear', `MONTHLY ${k}KM`))); if (m.runs) chips.append(el('span', 'chip pb', `${m.runs} RUNS`)); }
+    if (m) {
+      m.hit.forEach((k) => chips.append(el('span', 'chip clear', `MONTHLY ${k}KM`)));
+      const big = (n) => n >= 100 && n % 50 === 0;
+      if (m.act) chips.append(el('span', big(m.act) ? 'chip gold' : 'chip pb', `${big(m.act) ? '★ ' : ''}${m.act} ACTIVE DAYS`));
+      if (m.runs) chips.append(el('span', big(m.runs) ? 'chip gold' : 'chip pb', `${big(m.runs) ? '★ ' : ''}${m.runs} RUN DAYS`));
+    }
     head.append(chips); card.append(head);
     if (run) {
       const st = el('div', 'rc-stats');

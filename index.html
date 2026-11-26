@@ -593,6 +593,7 @@ function fillRecent(daily, records, S) {
     const strength = [['pushup', '腕立て'], ['situp', '腹筋'], ['squat', 'スクワット']];
     strength.forEach(([k, n]) => { if (+r[k + '_sets']) sc.append(el('span', 'chip str', `${n} 動画${r[k + '_sets']}セット`)); if (+r[k + '_reps']) sc.append(el('span', 'chip str', `${n} ${r[k + '_reps']}回`)); });
     if (+r.glute_sets) sc.append(el('span', 'chip str', `尻トレ 動画${r.glute_sets}セット`));
+    if (+r.iliopsoas_sets) sc.append(el('span', 'chip str', `腸腰筋 動画${r.iliopsoas_sets}セット`));
     if (+r.dumbbell_reps) sc.append(el('span', 'chip str', `ダンベル ${r.dumbbell_reps}回`));
     if (+r.roller_reps) sc.append(el('span', 'chip str', `ローラー ${r.roller_reps}回`));
     if (+r.plank_sec) sc.append(el('span', 'chip str', `プランク ${r.plank_sec}秒`));

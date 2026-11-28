@@ -564,7 +564,7 @@ function fillRecent(daily, records, S) {
     const card = el('div', 'rc');
     const head = el('div', 'rc-head'), left = el('div');
     left.append(el('div', 'rc-date', md(r.date) + '（' + wd(r.date) + '）'));
-    const kinds = []; if (run) kinds.push('ランニング'); if (+r.strength_day) kinds.push(+r.gym ? 'ジム' : '筋トレ');
+    const kinds = []; if (run) kinds.push('ランニング'); if (+r.strength_day) kinds.push(+r.gym ? 'ジム' : '筋トレ'); if (r.other) kinds.push(r.other);
     left.append(el('div', 'rc-title', '曜日'.replace('曜日', wd(r.date) + '曜日 ') + kinds.join(' ＋ ')));
     head.append(left);
     const chips = el('div', 'chips');
@@ -746,13 +746,13 @@ function drawHeat(daily) {
   const svg = d3.select(el).append('svg').attr('width', Math.max(need, W0)).attr('height', H).attr('viewBox', `0 0 ${Math.max(need, W0)} ${H}`)
     .attr('role', 'img').attr('aria-label', '日ごとの運動の有無を色で示したカレンダー').style('display', 'block');
   if (need > W0) el.scrollLeft = need;
-  const col = (r) => +r.run_day && +r.strength_day ? 'var(--both)' : +r.run_day ? 'var(--run)' : +r.strength_day ? 'var(--str)' : 'var(--off)';
+  const col = (r) => { const st = +r.strength_day || !!r.other; return +r.run_day && st ? 'var(--both)' : +r.run_day ? 'var(--run)' : st ? 'var(--str)' : 'var(--off)'; };
   const tp = tip(el);
   svg.append('g').selectAll('rect').data(rows).join('rect')
     .attr('x', (r) => lab + d3.utcSunday.count(start, r.d) * step).attr('y', (r) => top + r.d.getUTCDay() * step)
     .attr('width', cell).attr('height', cell).attr('rx', 3).style('fill', col)
     .on('pointermove', (ev, r) => {
-      const p = []; if (+r.run_km) p.push(`ラン ${r.run_km}km`); if (+r.strength_day) p.push(+r.gym ? 'ジム' : '筋トレ');
+      const p = []; if (+r.run_km) p.push(`ラン ${r.run_km}km`); if (+r.strength_day) p.push(+r.gym ? 'ジム' : '筋トレ'); if (r.other) p.push(r.other);
       tp.show(ev, `${md(r.date)}：${p.length ? p.join('・') : 'お休み'}`);
     }).on('pointerleave', () => tp.hide());
   ['日','月','火','水','木','金','土'].forEach((t, i) => svg.append('text').attr('x', 0).attr('y', top + i * step + cell - 3).style('font-family', 'var(--jp)').text(t));
